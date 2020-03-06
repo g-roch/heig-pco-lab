@@ -8,7 +8,11 @@ void runTask(CriticalSection *criticalSection, unsigned long nbIterations, int i
 
     while (i < nbIterations)
     {
+        criticalSection.lock(id);
+	std::atomic_thread_fence();
         counter++;
+	std::atomic_thread_fence();
+        criticalSection.unlock(id);
         i++;
     }
 }
