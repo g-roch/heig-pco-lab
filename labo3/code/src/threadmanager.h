@@ -14,6 +14,7 @@
 
 #include <QObject>
 #include <QString>
+#include <pcosynchro/pcomutex.h>
 
 
 /**
@@ -25,7 +26,17 @@ class ThreadManager: public QObject
 {
     Q_OBJECT
 private:
-
+    void hackingThread(
+            QString charset,
+            QString salt,
+            QString hash,
+            unsigned int nbChars,
+            QVector<unsigned int> currentPasswordArray,
+            long long unsigned int nbToCompute
+     );
+    QString passowrdFound;
+    bool ended;
+    PcoMutex mutexProgress;
 public:
     /**
      * \brief ThreadManager Constructeur simple
