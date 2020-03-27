@@ -13,6 +13,7 @@
 #ifndef MYTHREAD_H
 #define MYTHREAD_H
 
+static volatile bool busy = 0;
 
 /**
  * \brief fonction exécutée par les threads

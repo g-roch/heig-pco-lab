@@ -63,14 +63,14 @@ QString ThreadManager::startHacking(
 {
 
     long long unsigned int nbToCompute;
-    long long unsigned int nbToComputeSended;
+    long long unsigned int nbToComputeSent;
     /*
      * Nombre de caractères différents pouvant composer le mot de passe
      */
     unsigned int nbValidChars;
 
     nbToCompute        = intPow(charset.length(),nbChars);
-    nbToComputeSended  = 0;
+    nbToComputeSent  = 0;
     /*
      * Nombre de caractères différents pouvant composer le mot de passe
      */
@@ -95,9 +95,9 @@ QString ThreadManager::startHacking(
     for(unsigned int i = 0; i < nbThreads; ++i) {
         long long unsigned int toCalc = nbToCompute / nbThreads;
         if(i == nbThreads -1) {
-            toCalc = nbToCompute - nbToComputeSended;
+            toCalc = nbToCompute - nbToComputeSent;
         }
-        nbToComputeSended += toCalc;
+        nbToComputeSent += toCalc;
         PcoThread * t = new PcoThread(&MyThread::start, &myThread, currentPasswordArray, toCalc);
 
         // Incrément le pwd

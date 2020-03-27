@@ -1,6 +1,8 @@
 #ifndef CRITICALSECTION_H
 #define CRITICALSECTION_H
 
+#include <vector>
+
 class CriticalSection
 {
 public:
@@ -53,6 +55,10 @@ public:
      * @param index Indice de la tâche appelante
      */
     void unlock(unsigned int index) override;
+
+private:
+    std::vector<int> level;
+    std::vector<unsigned int> last_to_enter;
 };
 
 #endif // CRITICALSECTION_H

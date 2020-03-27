@@ -1,5 +1,5 @@
 #include "counterincrementer.h"
-
+#include <thread>
 static volatile long unsigned int counter;
 
 void runTask(CriticalSection *criticalSection, unsigned long nbIterations, int id)
@@ -8,11 +8,12 @@ void runTask(CriticalSection *criticalSection, unsigned long nbIterations, int i
 
     while (i < nbIterations)
     {
-        criticalSection.lock(id);
-	std::atomic_thread_fence();
+        criticalSection->lock(id);
+        std::atomic_thread_fence(std::memory_order_acq_rel);
         counter++;
-	std::atomic_thread_fence();
-        criticalSection.unlock(id);
+        std::atomic_thread_fence(std::memory_order_acq_rel);
+        criticalSection->unlock(id);
+
         i++;
     }
 }

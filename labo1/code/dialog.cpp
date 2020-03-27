@@ -47,6 +47,7 @@ void Dialog::startThreads()
         for (long unsigned int i=0; i<nbThreads; i++)
         {
             PcoThread *currentThread = new PcoThread(runTask, nbIterations);
+            busy = 1;
             threadList.push_back(std::unique_ptr<PcoThread>(currentThread));
         }
 
@@ -56,6 +57,7 @@ void Dialog::startThreads()
         for (long unsigned int i=0; i<nbThreads; i++)
         {
             threadList[i]->join();
+            busy = 0;
         }
         /* Vide la liste de pointeurs de threads */
         threadList.clear();
