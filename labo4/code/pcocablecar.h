@@ -121,7 +121,20 @@ protected:
      */
     bool inService = true;
 
+    /*!
+     * \brief Le service du télécabine se termine la prochaine fois que l'on arrive en-bas
+     * \author Cassandre Wojciechowki
+     * \author Gabriel Roch
+     */
+    bool serviceIsEnding = false;
+
+    PcoSemaphore semaphoreSkierGoIn;
     // A vous d'ajouter les attributs dont vous avez besoin
+
+    PcoSemaphore mutexNbSkierWaiting;
+    PcoSemaphore mutexNbSkierInside;
+    PcoSemaphore semaphoreSkierGoOut;
+
 };
 
 #endif // PCOCABLECAR_H

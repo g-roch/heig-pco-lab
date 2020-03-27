@@ -18,6 +18,18 @@ int SkierBehavior::nextId = 1;
 void SkierBehavior::run()
 {
     // A vous d'ajouter le comportement du skieur
+    while (cableCar->isInService()) {
+
+        cableCar->waitForCableCar(id);
+        if( not cableCar->isInService()) {
+            cableCar->goIn(id);
+            cableCar->waitInsideCableCar(id);
+            cableCar->goOut(id);
+
+            goDownTheMountain();
+        }
+
+    }
 }
 
 void SkierBehavior::goDownTheMountain()
