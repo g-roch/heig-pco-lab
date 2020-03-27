@@ -1,2 +1,6 @@
 rendu.tar.gz
 rapport.pdf
+
+build-PCO_Labo_*-Desktop_Qt_5_12_7_GCC_64bit-*/
+PCO_Labo_*.pro.user
+.metadata/
