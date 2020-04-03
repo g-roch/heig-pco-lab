@@ -21,7 +21,7 @@ void SkierBehavior::run()
     while (cableCar->isInService()) {
 
         cableCar->waitForCableCar(id);
-        if( not cableCar->isInService()) {
+        if(cableCar->isInService()) {
             cableCar->goIn(id);
             cableCar->waitInsideCableCar(id);
             cableCar->goOut(id);

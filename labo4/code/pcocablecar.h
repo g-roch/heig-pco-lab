@@ -102,6 +102,11 @@ public:
 protected:
 
     /*!
+     * \brief Permet de mettre fin au service du télécabine
+     */
+    void realEndService();
+
+    /*!
      * \brief La capacité du télécabine en nombre de skieurs (nombre de places)
      */
     const unsigned int capacity;
@@ -134,6 +139,8 @@ protected:
     PcoSemaphore mutexNbSkierWaiting;
     PcoSemaphore mutexNbSkierInside;
     PcoSemaphore semaphoreSkierGoOut;
+    PcoSemaphore semaphoreSkierWaitGoUp;
+    PcoSemaphore semaphoreSkierWaitGoDown;
 
 };
 
