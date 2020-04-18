@@ -15,7 +15,9 @@ constexpr unsigned int MIN_SECONDS_DELAY = 1;
 constexpr unsigned int MAX_SECONDS_DELAY = 5;
 constexpr unsigned int SECOND_IN_MICROSECONDS = 1000000;
 
-// Nous avons créé des sémaphores permettant de gérer les attentes des skieurs et de la télécabine
+/**
+ * Constructeur de la télécabine, construction des sémaphores permettant de gérer les attentes des skieurs et de la télécabine
+ */
 PcoCableCar::PcoCableCar(const unsigned int capacity) :
     capacity(capacity),
     semaphoreSkierGoIn(0),
@@ -28,11 +30,19 @@ PcoCableCar::PcoCableCar(const unsigned int capacity) :
 
 }
 
+/**
+ * Destructeur
+ */
 PcoCableCar::~PcoCableCar()
 {
 
 }
 
+/**
+ * Fonction gérant l'attente du skieur sur la télécabine
+ * @param id est le numéro d'identification du skieur
+ * @return la fonction se termine soit quand la télécabine est présente, soit à la fin du service
+ */
 void PcoCableCar::waitForCableCar(int id)
 {
     qDebug() << "Skieur " << id << " attend la télécabine";
@@ -52,14 +62,23 @@ void PcoCableCar::waitForCableCar(int id)
     mutexNbSkierWaiting.release();
 }
 
+/**
+ * Fonction gérant l'attente du skieur dans la télécabine durant la montée
+ * @param id est le numéro d'identification du skieur
+ * @return la fonction se termine quand la télécabine arrive au sommet
+ */
 void PcoCableCar::waitInsideCableCar(int id)
 {
     qDebug() << "Skieur " << id << " attend dans la télécabine d'arriver en haut";
 
-    // Le skieur attend de sortir de la télécabine
+    // Le skieur attend de pouvoir sortir de la télécabine
     semaphoreSkierGoOut.acquire();
 }
 
+/**
+ * Fonction gérant la montée du skieur dans la télécabine
+ * @param id est le numéro d'identification du skieur
+ */
 void PcoCableCar::goIn(int id)
 {
     qDebug() << "Skieur " << id << " entre dans la télécabine ";
@@ -69,10 +88,14 @@ void PcoCableCar::goIn(int id)
     ++nbSkiersInside;
     mutexNbSkierInside.release();
 
-    // Le skieur entre dans la télécabine
+    // Le skieur est monté dans la télécabine, pour ce skieur, elle peut donc partir
     semaphoreSkierWaitGoUp.release();
 }
 
+/**
+ * Fonction gérant la sortie du skieur de la télécabine
+ * @param id est le numéro d'identification du skieur
+ */
 void PcoCableCar::goOut(int id)
 {
     qDebug() << "Skieur " << id << " sort de la télécabine ";
@@ -82,29 +105,37 @@ void PcoCableCar::goOut(int id)
     --nbSkiersInside;
     mutexNbSkierInside.release();
 
-    // Le skieur sort de la télécabine et descend la montagne
+    // Le skieur est sorti de la télécabine, pour ce skieur, elle peut donc partir
     semaphoreSkierWaitGoDown.release();
 }
 
-// Indique si la télécabine est en fonction
+/**
+ * Indique si la télécabine est en service
+ * @return true si la cabine est en service
+ */
 bool PcoCableCar::isInService()
 {
     return inService;
 }
 
-// Indique que le service de la télécabine est en train de changer d'état
+/**
+ * Demande la fin de service de la télécabine
+ */
 void PcoCableCar::endService()
 {
     qDebug() << "Le service de la télécabine se termine";
     serviceIsEnding = true;
 }
 
-// Le service de la télécabine est terminé
+/**
+ * Effectue la fin réelle du service après la dernière descente
+ */
 void PcoCableCar::realEndService()
 {
     qDebug() << "Fin de service de la télécabine ";
 
-    // On change l'état du service de la télécabine
+    // On change l'état du service de la télécabine pour que les skieurs en attente qui seront libérés
+    // sachent qu'ils doivent partir et pas monter dans la cabine
     mutexNbSkierWaiting.acquire();
     inService = false;
     int max = nbSkiersWaiting;
@@ -116,12 +147,18 @@ void PcoCableCar::realEndService()
     }
 }
 
+/**
+ * Fait monter la cabine
+ */
 void PcoCableCar::goUp()
 {
     qDebug() << "La télécabine monte";
     PcoThread::usleep((MIN_SECONDS_DELAY + QRandomGenerator::system()->bounded(MAX_SECONDS_DELAY + 1)) * SECOND_IN_MICROSECONDS);
 }
 
+/**
+ * Fait descendre la cabine (si la fin de service a été demandée, termine effectivement le service)
+ */
 void PcoCableCar::goDown()
 {
     qDebug() << "La télécabine descend";
@@ -132,8 +169,14 @@ void PcoCableCar::goDown()
         realEndService();
 }
 
+/**
+ * Autorise le chargement des skieurs dans la télécabine
+ * @return la fonction se termine quand tous les skieurs autorisés sont dans la cabine
+ */
 void PcoCableCar::loadSkiers()
 {
+    // TODO gérer la fin de service PENDANT le chargement
+
     qDebug() << "Chargement de la cabine ";
 
     // Le skieur est en train de monter dans la télécabine
@@ -148,6 +191,10 @@ void PcoCableCar::loadSkiers()
 
 }
 
+/**
+ * Autorise le déchargement des skieurs de la télécabine
+ * @return la fonction se termine quand tous les skieurs sont sortis de la cabine
+ */
 void PcoCableCar::unloadSkiers()
 {
     qDebug() << "Déchargement des skieurs";
@@ -157,7 +204,7 @@ void PcoCableCar::unloadSkiers()
         semaphoreSkierGoOut.release();
     }
 
-    // Le skieur attend de s'élancer pour descendre la montagne
+    // Le skieur est effectivement sorti de la télécabine
     for (unsigned i = 0; i < capacity and isInService(); ++i) {
         semaphoreSkierWaitGoDown.acquire();
     }

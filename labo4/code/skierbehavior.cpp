@@ -15,12 +15,15 @@ constexpr unsigned int SECOND_IN_MICROSECONDS = 1000000;
 
 int SkierBehavior::nextId = 1;
 
+/**
+ * Comportement du skieur, quand la télécabine est en service, le skieur l'attend,
+ * monte dedans, attend d'être en haut et sort. Puis il descend la montagne à skis.
+ */
 void SkierBehavior::run()
 {
-    // Comportement du skieur, quand la télécabine est en service, le skieur l'attend,
-    // monte dedans, attend d'être en haut et sort. Puis il descend la montagne à skis.
     while (cableCar->isInService()) {
         cableCar->waitForCableCar(id);
+        // Si la fin de service arrive pendant que le skieur attend de monter dans la télécabine, il rentre chez lui
         if(cableCar->isInService()) {
             cableCar->goIn(id);
             cableCar->waitInsideCableCar(id);
@@ -31,6 +34,9 @@ void SkierBehavior::run()
     }
 }
 
+/**
+ * Le skieur descend de la montagne
+ */
 void SkierBehavior::goDownTheMountain()
 {
     qDebug() << "Skieur" << id << "est en train de skier et descend de la montagne";

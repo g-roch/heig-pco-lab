@@ -127,19 +127,36 @@ protected:
     bool inService = true;
 
     /*!
-     * \brief Le service du télécabine se termine la prochaine fois que l'on arrive en-bas
+     * \brief Le service de la télécabine se termine la prochaine fois que l'on arrive en-bas
      * \author Cassandre Wojciechowki
      * \author Gabriel Roch
      */
     bool serviceIsEnding = false;
 
-    PcoSemaphore semaphoreSkierGoIn;
-    // A vous d'ajouter les attributs dont vous avez besoin
-
+    /*!
+     * \brief Les deux mutex permettent de gérer la concurrence d'accès pour les variables NbSkierWaiting et NbSkierInside
+     */
     PcoSemaphore mutexNbSkierWaiting;
     PcoSemaphore mutexNbSkierInside;
+
+    /*!
+     * \brief Sémaphore permettant de s'assurer qu'uniquement le bon nombre de skieurs monte dans la télécabine
+     */
+    PcoSemaphore semaphoreSkierGoIn;
+
+    /*!
+     * \brief Sémaphore permettant de s'assurer que tous les skieurs sortent de la télécabine
+     */
     PcoSemaphore semaphoreSkierGoOut;
+
+    /*!
+     * \brief Sémaphore permettant de s'assurer que tous les skieurs sont dans la télécabine avant le départ
+     */
     PcoSemaphore semaphoreSkierWaitGoUp;
+
+    /*!
+     * \brief Sémaphore permettant de s'assurer que tous les skieurs sont en dehors de la télécabine
+     */
     PcoSemaphore semaphoreSkierWaitGoDown;
 
 };
