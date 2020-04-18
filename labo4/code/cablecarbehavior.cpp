@@ -3,13 +3,15 @@
 //  / ___/ /__/ /_/ / / __// // / __// // / //
 // /_/   \___/\____/ /____/\___/____/\___/  //
 //                                          //
-// Auteurs : Prénom Nom, Prénom Nom
+// Auteurs : Gabriel Roch, Cassandre Wojciechowski
 
 #include "cablecarbehavior.h"
 
 void CableCarBehavior::run()
 {
-    // A vous d'ajouter le comportement du télécabine
+    // Comportement de la télécabine
+    // Quand la télécabine est en service, les skieurs montent dedans, la télécabine monte,
+    // les skieurs sortent, la télécabine redescend.
     while (cableCar->isInService()) {
         cableCar->loadSkiers();
         cableCar->goUp();

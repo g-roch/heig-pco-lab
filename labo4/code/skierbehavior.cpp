@@ -3,7 +3,7 @@
 //  / ___/ /__/ /_/ / / __// // / __// // / //
 // /_/   \___/\____/ /____/\___/____/\___/  //
 //                                          //
-// Auteurs : Prénom Nom, Prénom Nom
+// Auteurs : Gabriel Roch, Cassandre Wojciechowski
 
 #include "skierbehavior.h"
 
@@ -17,9 +17,9 @@ int SkierBehavior::nextId = 1;
 
 void SkierBehavior::run()
 {
-    // A vous d'ajouter le comportement du skieur
+    // Comportement du skieur, quand la télécabine est en service, le skieur l'attend,
+    // monte dedans, attend d'être en haut et sort. Puis il descend la montagne à skis.
     while (cableCar->isInService()) {
-
         cableCar->waitForCableCar(id);
         if(cableCar->isInService()) {
             cableCar->goIn(id);
@@ -28,7 +28,6 @@ void SkierBehavior::run()
 
             goDownTheMountain();
         }
-
     }
 }
 

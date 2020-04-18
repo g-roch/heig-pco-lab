@@ -9,7 +9,7 @@
 // avant vos lancements etc. pour effectuer des tests.
 //
 // Modifications :
-// Auteurs : Prénom Nom, Prénom Nom
+// Auteurs : Gabriel Roch, Cassandre Wojciechowski
 
 #include <QDebug>
 
