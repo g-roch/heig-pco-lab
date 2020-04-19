@@ -13,6 +13,43 @@ A la fin du service de la télécabine, elle termine sa montée, décharge les s
 
 ## Choix d'implémentation
 
+- Deux mutex pour la protection des variables `nbSkierWaiting` et `nbSkierInside`. Ces mutex sont implémenté à l'aide de sémaphore.
+
+### Attente à la station basse
+
+Lorsque des skieurs arrivent en-bas, ils demandent l'autorisation de monter dans une cabine avec un `acquire()` sur `semaphoreSkierGoIn`. Les treads des skieurs sont donc bloqué jusqu'aux `release()` qui sera effectuer par le thread de la cabine. Lorsque la cabine arrive en-bas et est prête à remonter, elle autorise le nombre de skieur qu'elle peut accueillir à monter, en faisant des `release()` sur `semaphoreSkierGoIn`.
+
+
+
+```sequence
+participant A AS SkierA
+participant B AS SkierB
+participant C AS SkierC
+participant S.GoIn AS GoIn
+participant S.WaitGoUp AS GoUp
+participant CableCar AS C
+Note left of SkierA: 3 skieurs
+Note left of SkierA:  en attentes
+SkierA -> GoIn: acquire()
+SkierB -> GoIn: acquire()
+SkierC -> GoIn: acquire()
+Note right of C: START .loadSkiers()
+C -> GoIn: 2 × release()
+C -> GoUp: acquire()
+GoIn --> SkierA: acquire() [OK]
+Note right of SkierA: Go In
+SkierA -> GoUp: release()
+GoUp --> C: acquire() [OK]
+C -> GoUp: acquire()
+GoIn --> SkierB: acquire() [OK]
+Note right of SkierB: Go In
+SkierB -> GoUp: release()
+GoUp --> C: acquire() [OK]
+Note right of C: END .loadSkiers()
+Note left of SkierA: 1 en attentes
+Note left of SkierA: 2 dans la cabine
+```
+
 
 
 
