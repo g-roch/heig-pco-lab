@@ -17,7 +17,7 @@ A la fin du service de la télécabine, elle termine sa montée, décharge les s
 
 ### Attente à la station basse
 
-Lorsque des skieurs arrivent en-bas, ils demandent l'autorisation de monter dans une cabine avec un `acquire()` sur `semaphoreSkierGoIn`. Les treads des skieurs sont donc bloqué jusqu'aux `release()` qui sera effectuer par le thread de la cabine. Lorsque la cabine arrive en-bas et est prête à remonter, elle autorise le nombre de skieur qu'elle peut accueillir à monter, en faisant des `release()` sur `semaphoreSkierGoIn`.
+Lorsque des skieurs arrivent en-bas, ils demandent l'autorisation de monter dans une cabine avec un `acquire()` sur `semaphoreSkierGoIn`. Les threads des skieurs sont donc bloqués jusqu'au `release()` qui sera effectué par le thread de la cabine. Lorsque la cabine arrive en-bas et est prête à remonter, elle autorise le nombre de skieurs qu'elle peut accueillir à monter, en faisant des `release()` sur `semaphoreSkierGoIn`.
 
 
 
@@ -29,7 +29,7 @@ participant S.GoIn AS GoIn
 participant S.WaitGoUp AS GoUp
 participant CableCar AS C
 Note left of SkierA: 3 skieurs
-Note left of SkierA:  en attentes
+Note left of SkierA:  en attente
 SkierA -> GoIn: acquire()
 SkierB -> GoIn: acquire()
 SkierC -> GoIn: acquire()
@@ -46,7 +46,7 @@ Note right of SkierB: Go In
 SkierB -> GoUp: release()
 GoUp --> C: acquire() [OK]
 Note right of C: END .loadSkiers()
-Note left of SkierA: 1 en attentes
+Note left of SkierA: 1 en attente
 Note left of SkierA: 2 dans la cabine
 ```
 
