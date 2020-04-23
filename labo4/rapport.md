@@ -5,7 +5,9 @@ Auteurs: Gabriel Roch, Cassandre Wojciechowski
 
 ## Description des fonctionnalités du logiciel
 
-Ce petit programme permet de gérer les montées et descentes de skieurs virtuels au moyen d'une télécabine virtuelle également. La télécabine effectue des trajets entre le bas et le sommet de la montagne. A la station du bas, des skieurs attendent de monter dans la télécabine. Quand elle arrive, un nombre N de skieurs montent puis la télécabine démarre sa montée. A l'arrivée au sommet, les skieurs sortent de la télécabine et descendent à skis. 
+Ce petit programme permet de gérer les montées et descentes de skieurs virtuels au moyen d'une télécabine virtuelle également. La télécabine effectue des trajets entre le bas et le sommet de la montagne. A la station du bas, des skieurs attendent de monter dans la télécabine. Quand elle arrive, un nombre N de skieurs montent puis la télécabine démarre sa montée. Si il y a plus de skieurs qui attendent que ce que la cabine peut contenir, elle fait monter le maximum de skieurs autorisés. Si il y a moins de skieurs que la capacité de la cabine, elle attend à la station du bas de pouvoir se remplir. 
+
+A l'arrivée au sommet, les skieurs sortent de la télécabine et descendent à skis. 
 
 La télécabine descend en étant toujours vide, les skieurs ne descendent jamais dedans. 
 
@@ -18,8 +20,6 @@ A la fin du service de la télécabine, elle termine sa montée, décharge les s
 ### Attente à la station basse
 
 Lorsque des skieurs arrivent en-bas, ils demandent l'autorisation de monter dans une cabine avec un `acquire()` sur `semaphoreSkierGoIn`. Les threads des skieurs sont donc bloqués jusqu'au `release()` qui sera effectué par le thread de la cabine. Lorsque la cabine arrive en-bas et est prête à remonter, elle autorise le nombre de skieurs qu'elle peut accueillir à monter, en faisant des `release()` sur `semaphoreSkierGoIn`.
-
-
 
 ```sequence
 participant A AS SkierA
@@ -50,12 +50,13 @@ Note left of SkierA: 1 en attente
 Note left of SkierA: 2 dans la cabine
 ```
 
-
-
-
+Le même principe est utilisé à la station haute pour faire descendre les skieurs, il y a un sémaphore pour faire attendre les skieurs dans la cabine (jusqu'à ce qu'elle soit en-haut) et un autre sémaphore pour faire attendre la cabine en-haut jusqu'à ce que tous les skieurs soient descendus.
 
 ## Tests effectués
 
-
-Description de chaque test, et information sur le fait qu'il ait passé ou non
+| Test                                 | Résultat attendu                                             | Passé |
+| ------------------------------------ | ------------------------------------------------------------ | ----- |
+| 10 skieurs<br />5 skieurs par cabine | Le programme tourne et fait monter 5 skieurs à la fois       | OK    |
+| 5 skieurs<br />5 skieurs par cabine  | Le programme tourne et fait monter tous les skieurs en un voyage, puis la cabine attend que tous les skieurs soient en-bas | OK    |
+| 5 skieurs<br />10 skieurs par cabine | Les skieurs montent dans la première cabine, et cette cabine attend à l'infini d'être pleine, comme demandé dans la donnée| OK    |
 
