@@ -11,6 +11,8 @@
 #include "locomotivebehavior.h"
 #include "sharedsectioninterface.h"
 #include "sharedsection.h"
+#include "allsections.h"
+#include "parcours.h"
 
 // Locomotives :
 // Vous pouvez changer les vitesses initiales, ou utiliser la fonction loco.fixerVitesse(vitesse);
@@ -98,8 +100,27 @@ int cmain()
      * Threads des locos *
      ********************/
 
-    // Création de la section partagée
-    std::shared_ptr<SharedSectionInterface> sharedSection = std::make_shared<SharedSection>();
+    // Création des sections partagées
+    std::shared_ptr<AllSections> sharedSection = std::make_shared<AllSections>();
+
+    // Création des parcours
+    Parcours parcoursA;
+    parcoursA.addPtPassage(22);
+    parcoursA.addPtPassage(21, {{16, TOUT_DROIT}});
+    parcoursA.addPtPassage(20);
+    parcoursA.addPtPassage(19, {{13, TOUT_DROIT}});
+    parcoursA.addPtPassage(13);
+    parcoursA.addPtPassage(12, {{10, TOUT_DROIT}});
+    parcoursA.addPtPassage(11);
+    parcoursA.addPtPassage(10, {{7, TOUT_DROIT}});
+    parcoursA.addPtPassage(4);
+    parcoursA.addPtPassage(3, {{4, TOUT_DROIT}});
+    parcoursA.addPtPassage(2);
+    parcoursA.addPtPassage(1, {{1, TOUT_DROIT}});
+    parcoursA.addPtPassage(31);
+    parcoursA.addPtPassage(30, {{22, TOUT_DROIT}});
+    parcoursA.addPtPassage(29);
+    parcoursA.addPtPassage(28, {{19, TOUT_DROIT}});
 
     // Création du thread pour la loco 0
     std::unique_ptr<Launchable> locoBehaveA = std::make_unique<LocomotiveBehavior>(locoA, sharedSection /*, autres paramètres ...*/);
@@ -110,11 +131,11 @@ int cmain()
     afficher_message(qPrintable(QString("Lancement thread loco A (numéro %1)").arg(locoA.numero())));
     locoBehaveA->startThread();
     afficher_message(qPrintable(QString("Lancement thread loco B (numéro %1)").arg(locoB.numero())));
-    locoBehaveB->startThread();
+    //locoBehaveB->startThread();
 
     // Attente sur la fin des threads
     locoBehaveA->join();
-    locoBehaveB->join();
+   // locoBehaveB->join();
 
     //Fin de la simulation
     mettre_maquette_hors_service();

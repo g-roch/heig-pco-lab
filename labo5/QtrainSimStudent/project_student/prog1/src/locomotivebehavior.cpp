@@ -8,6 +8,18 @@
 #include "locomotivebehavior.h"
 #include "ctrain_handler.h"
 
+/*!
+ * \brief locomotiveBehavior Constructeur de la classe
+ * \param loco la locomotive dont on représente le comportement
+ */
+LocomotiveBehavior::LocomotiveBehavior(Locomotive& loco, std::shared_ptr<AllSections> sharedSection /*, autres paramètres éventuels */) :
+    loco(loco), allSections(sharedSection)
+{
+    // Eventuel code supplémentaire du constructeur
+}
+
+PcoSemaphore LocomotiveBehavior::mutexSections(1);
+
 void LocomotiveBehavior::run()
 {
     //Initialisation de la locomotive
