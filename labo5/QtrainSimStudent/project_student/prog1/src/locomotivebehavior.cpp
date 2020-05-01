@@ -12,8 +12,8 @@
  * \brief locomotiveBehavior Constructeur de la classe
  * \param loco la locomotive dont on représente le comportement
  */
-LocomotiveBehavior::LocomotiveBehavior(Locomotive& loco, std::shared_ptr<AllSections> sharedSection /*, autres paramètres éventuels */) :
-    loco(loco), allSections(sharedSection)
+LocomotiveBehavior::LocomotiveBehavior(Locomotive& loco, std::shared_ptr<AllSections> sharedSection, Parcours& parcours /*, autres paramètres éventuels */) :
+    loco(loco), allSections(sharedSection), parcours(parcours)
 {
     // Eventuel code supplémentaire du constructeur
 }
@@ -29,10 +29,27 @@ void LocomotiveBehavior::run()
 
     /* A vous de jouer ! */
 
-    // Vous pouvez appeler les méthodes de la section partagée comme ceci :
-    //sharedSection->request(loco);
-    //sharedSection->getAccess(loco);
-    //sharedSection->leave(loco);
+    for(size_t i = 0 ; i < parcours.size(); ++i) {
+        Parcours::aiguilles const & aiguilles = parcours.getAiguillages(i);
+        for(Parcours::aiguille const & a : aiguilles) {
+           diriger_aiguillage(a.first, a.second, 0);
+        }
+        int nextContact ;
+        if(i == parcours.size() -1)
+            nextContact = parcours.getPtPassage(0);
+        else
+            nextContact = parcours.getPtPassage(i+1);
+        Section s (parcours.getPtPassage(i), nextContact);
+        allSections->get(s)->getAccess(loco, SharedSectionInterface::Priority::LowPriority);
+        attendre_contact(parcours.getPtPassage(i));
+        int lastContact ;
+        if(i == 0)
+            lastContact = parcours.getPtPassage(parcours.size() -1);
+        else
+            lastContact = parcours.getPtPassage(i-1);
+        s = Section(parcours.getPtPassage(i), lastContact);
+        allSections->get(s)->leave(loco);
+    }
 
     while(1) {}
 }

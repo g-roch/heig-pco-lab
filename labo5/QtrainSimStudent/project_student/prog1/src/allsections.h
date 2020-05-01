@@ -10,12 +10,15 @@ class AllSections
 {
 public:
     AllSections();
+    ~AllSections();
 
     std::shared_ptr<SharedSection> get(Section section);
+
 private :
     PcoSemaphore mutex;
     //std::map<Section, SharedSection> sections;
-     std::map<Section, std::shared_ptr<SharedSection>> sections;
+    std::map<Section, std::shared_ptr<SharedSection>> sections;
+    //std::map<Section, SharedSection*> sections;
 
 };
 

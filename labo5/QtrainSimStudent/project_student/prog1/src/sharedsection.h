@@ -28,7 +28,8 @@ public:
      * @brief SharedSection Constructeur de la classe qui représente la section partagée.
      * Initialisez vos éventuels attributs ici, sémaphores etc.
      */
-    SharedSection() {
+    SharedSection() : accessMutex(1), free(true), waiting(1), nbLocoWaiting(0)
+    {
         // TODO
     }
 
@@ -56,6 +57,28 @@ public:
      */
     void getAccess(Locomotive &loco, Priority priority) override {
         // TODO
+        bool stopped = false;
+        accessMutex.acquire();
+
+        while(free == false){
+            nbLocoWaiting++;
+            accessMutex.release();
+
+            if(stopped == false){
+                loco.arreter();
+                stopped = true;
+            }
+            waiting.acquire();
+
+            accessMutex.acquire();
+            nbLocoWaiting--;
+        }
+
+        free = false;
+        accessMutex.release();
+        if(stopped == true){
+            loco.demarrer();
+        }
 
         // Exemple de message dans la console globale
         afficher_message(qPrintable(QString("The engine no. %1 accesses the shared section.").arg(loco.numero())));
@@ -68,16 +91,23 @@ public:
      */
     void leave(Locomotive& loco) override {
         // TODO
+        accessMutex.acquire();
+        free = true;
+
+        if(nbLocoWaiting > 1){
+            waiting.release();
+        }
+        accessMutex.release();
 
         // Exemple de message dans la console globale
         afficher_message(qPrintable(QString("The engine no. %1 leaves the shared section.").arg(loco.numero())));
     }
 
-    /* A vous d'ajouter ce qu'il vous faut */
-
 private:
-    // Méthodes privées ...
-    // Attributes privés ...
+    PcoSemaphore accessMutex;
+    bool free;
+    PcoSemaphore waiting;
+    unsigned int nbLocoWaiting;
 };
 
 
