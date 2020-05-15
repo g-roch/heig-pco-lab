@@ -9,6 +9,7 @@
 #define SHAREDSECTION_H
 
 #include <QDebug>
+#include <string>
 
 #include <pcosynchro/pcosemaphore.h>
 
@@ -28,7 +29,7 @@ public:
      * @brief SharedSection Constructeur de la classe qui représente la section partagée.
      * Initialisez vos éventuels attributs ici, sémaphores etc.
      */
-    SharedSection() : accessMutex(1), free(true), waiting(1), nbLocoWaiting(0)
+    SharedSection(std::string name) : name(name), accessMutex(1), free(true), waiting(1), nbLocoWaiting(0)
     {
         // TODO
     }
@@ -56,15 +57,16 @@ public:
      * @param priority La priorité de la locomotive qui fait l'appel
      */
     void getAccess(Locomotive &loco, Priority priority) override {
+        afficher_message(qPrintable(QString(("The engine no. %1 getAccess()."+name).c_str()).arg(loco.numero())));
         // TODO
         bool stopped = false;
         accessMutex.acquire();
 
-        while(free == false){
+        while(not free and idLoco != loco.numero()){
             nbLocoWaiting++;
             accessMutex.release();
 
-            if(stopped == false){
+            if(not stopped){
                 loco.arreter();
                 stopped = true;
             }
@@ -75,13 +77,16 @@ public:
         }
 
         free = false;
+        idLoco = loco.numero();
+        ++count;
         accessMutex.release();
-        if(stopped == true){
+        //if(stopped){
+        //    loco.demarrer();
+        //}
             loco.demarrer();
-        }
 
         // Exemple de message dans la console globale
-        afficher_message(qPrintable(QString("The engine no. %1 accesses the shared section.").arg(loco.numero())));
+        afficher_message(qPrintable(QString(("The engine no. %1 accesses the shared section."+name).c_str()).arg(loco.numero())));
     }
 
     /**
@@ -91,23 +96,32 @@ public:
      */
     void leave(Locomotive& loco) override {
         // TODO
+        afficher_message(qPrintable(QString(("Loco %1 leaves(), "+name).c_str()).arg(loco.numero())));
         accessMutex.acquire();
-        free = true;
+        --count;
+        if(count == 0) {
+          free = true;
 
-        if(nbLocoWaiting > 1){
+          if(nbLocoWaiting > 0){
             waiting.release();
+            afficher_message(qPrintable(QString("Loco %1 release()").arg(loco.numero())));
+          }
         }
+
         accessMutex.release();
 
         // Exemple de message dans la console globale
-        afficher_message(qPrintable(QString("The engine no. %1 leaves the shared section.").arg(loco.numero())));
+        afficher_message(qPrintable(QString(("The engine no. %1 leaves the shared section."+name).c_str()).arg(loco.numero())));
     }
 
 private:
+    std::string name;
     PcoSemaphore accessMutex;
     bool free;
     PcoSemaphore waiting;
     unsigned int nbLocoWaiting;
+    int idLoco;
+    int count;
 };
 
 

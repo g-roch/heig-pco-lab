@@ -9,6 +9,8 @@
 #define SHAREDSECTION_H
 
 #include <QDebug>
+#include <map>
+#include <string>
 
 #include <pcosynchro/pcosemaphore.h>
 
@@ -22,15 +24,16 @@
  */
 class SharedSection final : public SharedSectionInterface
 {
-public:
+  public:
 
     /**
      * @brief SharedSection Constructeur de la classe qui représente la section partagée.
      * Initialisez vos éventuels attributs ici, sémaphores etc.
      */
-    SharedSection() {
-        // TODO
-    }
+    SharedSection(std::string name) : name(name), accessMutex(1), free(true), waiting(1), nbLocoWaiting(0), prioritiesCount()
+  {
+    // TODO
+  }
 
     /**
      * @brief request Méthode a appeler pour indiquer que la locomotive désire accéder à la
@@ -39,10 +42,12 @@ public:
      * @param priority La priorité de la locomotive qui fait l'appel
      */
     void request(Locomotive& loco, Priority priority) override {
-        // TODO
+      accessMutex.acquire();
+      ++prioritiesCount[priority];
+      accessMutex.release();
 
-        // Exemple de message dans la console globale
-        afficher_message(qPrintable(QString("The engine no. %1 requested the shared section.").arg(loco.numero())));
+      // Exemple de message dans la console globale
+      afficher_message(qPrintable(QString(("The engine no. %1 requested the shared section."+name).c_str()).arg(loco.numero())));
     }
 
     /**
@@ -55,11 +60,50 @@ public:
      * @param priority La priorité de la locomotive qui fait l'appel
      */
     void getAccess(Locomotive &loco, Priority priority) override {
+        afficher_message(qPrintable(QString(("The engine no. %1 getAccess()."+name).c_str()).arg(loco.numero())));
         // TODO
+        bool stopped = false;
+        accessMutex.acquire();
+
+      while(not canAccess(loco, priority)){
+            nbLocoWaiting++;
+            accessMutex.release();
+
+            if(not stopped){
+                loco.arreter();
+                stopped = true;
+            }
+            waiting.acquire();
+
+            accessMutex.acquire();
+            nbLocoWaiting--;
+        }
+
+        free = false;
+        idLoco = loco.numero();
+        ++count;
+        --prioritiesCount[priority];
+        accessMutex.release();
+        //if(stopped){
+        //    loco.demarrer();
+        //}
+            loco.demarrer();
 
         // Exemple de message dans la console globale
-        afficher_message(qPrintable(QString("The engine no. %1 accesses the shared section.").arg(loco.numero())));
+        afficher_message(qPrintable(QString(("The engine no. %1 accesses the shared section."+name).c_str()).arg(loco.numero())));
     }
+
+private:
+    bool canAccess(Locomotive &loco, Priority priority) const {
+      bool ret = free;
+      for(auto p : prioritiesCount) {
+        if(p.first > priority && p.second) {
+          ret = false;
+        }
+      }
+      return ret or idLoco == loco.numero();
+    }
+public:
 
     /**
      * @brief leave Méthode à appeler pour indiquer que la locomotive est sortie de la section
@@ -68,16 +112,33 @@ public:
      */
     void leave(Locomotive& loco) override {
         // TODO
+        afficher_message(qPrintable(QString(("Loco %1 leaves(), "+name).c_str()).arg(loco.numero())));
+        accessMutex.acquire();
+        --count;
+        if(count == 0) {
+          free = true;
+
+          if(nbLocoWaiting > 0){
+            waiting.release();
+            afficher_message(qPrintable(QString("Loco %1 release()").arg(loco.numero())));
+          }
+        }
+
+        accessMutex.release();
 
         // Exemple de message dans la console globale
-        afficher_message(qPrintable(QString("The engine no. %1 leaves the shared section.").arg(loco.numero())));
+        afficher_message(qPrintable(QString(("The engine no. %1 leaves the shared section."+name).c_str()).arg(loco.numero())));
     }
 
-    /* A vous d'ajouter ce qu'il vous faut */
-
 private:
-    // Méthodes privées ...
-    // Attributes privés ...
+    std::string name;
+    PcoSemaphore accessMutex;
+    bool free;
+    PcoSemaphore waiting;
+    unsigned int nbLocoWaiting;
+    std::map<Priority, int> prioritiesCount;
+    int idLoco;
+    int count;
 };
 
 
