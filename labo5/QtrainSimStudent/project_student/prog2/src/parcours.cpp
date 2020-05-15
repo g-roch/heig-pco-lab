@@ -27,3 +27,16 @@ Parcours::aiguilles const& Parcours::getAiguillages(size_t i) const{
     return aiguillage.at(i);
 
 }
+
+ParcoursIterator Parcours::begin() {
+    return ParcoursIterator(*this, 0);
+}
+ParcoursIterator Parcours::end() {
+    return ParcoursIterator(*this, size());
+}
+ParcoursIterator Parcours::rbegin() {
+    return ParcoursIterator(*this, size()-1, -1);
+}
+ParcoursIterator Parcours::rend() {
+    return ParcoursIterator(*this, -1, -1);
+}

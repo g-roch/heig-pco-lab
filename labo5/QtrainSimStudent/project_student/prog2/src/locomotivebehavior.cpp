@@ -30,32 +30,39 @@ void LocomotiveBehavior::run()
   /* A vous de jouer ! */
   const unsigned int NB_TOURS = 1;
   Section s (0, 0);
+  ParcoursIterator begin = parcours.begin();
+  ParcoursIterator end = parcours.end();
+
+  int direction = 1;
   while(1){
     for(unsigned int j = 0; j < NB_TOURS; j++){
+        if(direction == 1) {
+          begin = parcours.begin();
+          end = parcours.end();
+        }
+        else {
+            begin = parcours.rbegin();
+            end = parcours.rend();
+        }
+      for(ParcoursIterator it = begin; it != end; ++it) {
 
-      for(size_t i = 1 ; i < parcours.size(); ++i) {
-        for(Parcours::aiguille const & a : parcours.getAiguillages(i)) {
-          diriger_aiguillage(a.first, a.second, 0);
-        }
-        if(i != parcours.size() -1) {
-          int nextContact = parcours.getPtPassage(i+1);
-          s = Section(parcours.getPtPassage(i), nextContact);
-          allSections->get(s)->getAccess(loco, priority);
-        }
-        if(i < parcours.size() - 2) {
-            int a = parcours.getPtPassage(i+1);
-            int b = parcours.getPtPassage(i+2);
-            s = Section(a, b);
-            allSections->get(s)->request(loco, priority);
-        }
-        attendre_contact(parcours.getPtPassage(i));
-        printf("D\n");
-        int lastContact ;
-        if(i != 0) {
-          lastContact = parcours.getPtPassage(i-1);
-          s = Section(parcours.getPtPassage(i), lastContact);
-          allSections->get(s)->leave(loco);
-        }
+          for(Parcours::aiguille const & a : it.getAiguillages()) {
+            diriger_aiguillage(a.first, a.second, 0);
+          }
+          if(not it.last()) {
+            s = it.getNextSection();
+            allSections->get(s)->getAccess(loco, priority);
+          }
+          if(not it.lastOrBeforeLast()) {
+              s = it.getNextSection(2);
+              allSections->get(s)->request(loco, priority);
+          }
+          attendre_contact(it.getPtPassage());
+
+          if(not it.first()) {
+            s = it.getLastSection();
+            allSections->get(s)->leave(loco);
+          }
       }
 
     }
@@ -63,45 +70,7 @@ void LocomotiveBehavior::run()
     this->loco.arreter();
     this->loco.inverserSens();
     this->loco.demarrer();
-
-    for(unsigned int j = 0; j < NB_TOURS; j++){
-      printf("g\n");
-      for(int i = parcours.size() - 2 ; i >= 0 ; --i) {
-        if(i != 0) {
-          int nextContact = parcours.getPtPassage(i-1);
-          s = Section(parcours.getPtPassage(i), nextContact);
-          allSections->get(s)->getAccess(loco, priority);
-        }
-        if(i > 1) {
-            int a = parcours.getPtPassage(i-1);
-            int b = parcours.getPtPassage(i-2);
-          s = Section(a, b);
-          allSections->get(s)->request(loco, priority);
-        }
-        printf("3eme b\n");
-        attendre_contact(parcours.getPtPassage(i));
-        printf("c\n");
-        // Définir aiguilles
-        Parcours::aiguilles const & aiguilles = parcours.getAiguillages(i);
-        for(Parcours::aiguille const & a : aiguilles) {
-          diriger_aiguillage(a.first, a.second, 0);
-        }
-        int lastContact ;
-        if(i != parcours.size() - 1) {
-          lastContact = parcours.getPtPassage(i+1);
-          printf("d\n");
-          s = Section(parcours.getPtPassage(i), lastContact);
-          allSections->get(s)->leave(loco);
-        }
-
-        printf("e\n");
-      }
-
-    }
-
-    this->loco.arreter();
-    this->loco.inverserSens();
-    this->loco.demarrer();
+    direction *= -1;
   }
 
 }
