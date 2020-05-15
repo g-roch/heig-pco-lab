@@ -41,23 +41,35 @@ printf("A\n");
                 }
 printf("B\n");
                 int nextContact ;
-                if(i == parcours.size() -1)
-                    nextContact = parcours.getPtPassage(0);
-                else
+                if(i != parcours.size() -1) {
                     nextContact = parcours.getPtPassage(i+1);
-printf("C\n");
-                Section s (parcours.getPtPassage(i), nextContact);
-                allSections->get(s)->getAccess(loco, SharedSectionInterface::Priority::LowPriority);
-                attendre_contact(parcours.getPtPassage(i));
+		    printf("C\n");
+		    Section s (parcours.getPtPassage(i), nextContact);
+		    allSections->get(s)->getAccess(loco, SharedSectionInterface::Priority::LowPriority);
+		    attendre_contact(parcours.getPtPassage(i));
+		}
+                //if(i == parcours.size() -1)
+                //    nextContact = parcours.getPtPassage(0);
+                //else
+                //    nextContact = parcours.getPtPassage(i+1);
+//printf("C\n");
+                //Section s (parcours.getPtPassage(i), nextContact);
+                //allSections->get(s)->getAccess(loco, SharedSectionInterface::Priority::LowPriority);
+                //attendre_contact(parcours.getPtPassage(i));
 printf("D\n");
                 int lastContact ;
-                if(i == 0)
-                    lastContact = parcours.getPtPassage(parcours.size() -1);
-                else
+		if(i != 0) {
                     lastContact = parcours.getPtPassage(i-1);
-printf("E\n");
-                s = Section(parcours.getPtPassage(i), lastContact);
-                allSections->get(s)->leave(loco);
+		    s = Section(parcours.getPtPassage(i), lastContact);
+		    allSections->get(s)->leave(loco);
+		}
+                //if(i == 0)
+                //    lastContact = parcours.getPtPassage(parcours.size() -1);
+                //else
+                //    lastContact = parcours.getPtPassage(i-1);
+//printf("E\n");
+                //s = Section(parcours.getPtPassage(i), lastContact);
+                //allSections->get(s)->leave(loco);
             }
 
         }
@@ -77,26 +89,41 @@ printf("g\n");
                 }
 printf("a\n");
                 int nextContact ;
-                if(i == 0)
-                    nextContact = parcours.getPtPassage(parcours.size() - 1);
-                else
+                if(i != 0) {
                     nextContact = parcours.getPtPassage(i-1);
-printf("b %i\n", (int) i);
-                Section s (parcours.getPtPassage(i), nextContact);
-printf("b %i, %i\n", s.first, s.second);
-// HELP : ici la loco s'arrête -> pb sur la section partagée qui doit être mal quittée au précédent passage
-                allSections->get(s)->getAccess(loco, SharedSectionInterface::Priority::LowPriority);
+		    printf("b %i\n", (int) i);
+		    Section s (parcours.getPtPassage(i), nextContact);
+		    printf("b %i, %i\n", s.first, s.second);
+		    // HELP : ici la loco s'arrête -> pb sur la section partagée qui doit être mal quittée au précédent passage
+		    allSections->get(s)->getAccess(loco, SharedSectionInterface::Priority::LowPriority);
+		}
+//                if(i == 0)
+//                    nextContact = parcours.getPtPassage(parcours.size() - 1);
+//                else
+//                    nextContact = parcours.getPtPassage(i-1);
+//printf("b %i\n", (int) i);
+//                Section s (parcours.getPtPassage(i), nextContact);
+//printf("b %i, %i\n", s.first, s.second);
+//// HELP : ici la loco s'arrête -> pb sur la section partagée qui doit être mal quittée au précédent passage
+//                allSections->get(s)->getAccess(loco, SharedSectionInterface::Priority::LowPriority);
 printf("3eme b\n");
                 attendre_contact(parcours.getPtPassage(i));
 printf("c\n");
                 int lastContact ;
-                if(i == parcours.size() - 1)
-                    lastContact = parcours.getPtPassage(0);
-                else
+		if(i !=  parcours.size() - 1) {
                     lastContact = parcours.getPtPassage(i+1);
-printf("d\n");
-                s = Section(parcours.getPtPassage(i), lastContact);
-                allSections->get(s)->leave(loco);
+		    printf("d\n");
+		    s = Section(parcours.getPtPassage(i), lastContact);
+		    allSections->get(s)->leave(loco);
+		}
+
+//                if(i == parcours.size() - 1)
+//                    lastContact = parcours.getPtPassage(0);
+//                else
+//                    lastContact = parcours.getPtPassage(i+1);
+//printf("d\n");
+//                s = Section(parcours.getPtPassage(i), lastContact);
+//                allSections->get(s)->leave(loco);
 printf("e\n");
             }
 
