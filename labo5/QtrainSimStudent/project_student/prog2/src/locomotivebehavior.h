@@ -3,7 +3,7 @@
 //  / ___/ /__/ /_/ / / __// // / __// // / //
 // /_/   \___/\____/ /____/\___/____/\___/  //
 //                                          //
-// Auteurs : Nom Prénom, Nom Prénom
+// Auteurs : Roch Gabriel, Wojciechowski Cassandre
 //
 #ifndef LOCOMOTIVEBEHAVIOR_H
 #define LOCOMOTIVEBEHAVIOR_H
