@@ -25,10 +25,11 @@ Pour cela, nous avons créé une classe nommée "ParcoursIterator" afin d'évite
 
 ## Tests effectués
 
+Les testes suivants on tous été excécuté avec succés (il n'y a jamais eu de crash ou de bloquage définitif des loco) :
 
-Faire varier :
-- inertie
-- vitesse
-- priorité
+ - Mettre en pause une loco, puis la rédémarrer pour que les deux locos arrive en sens opposé sur la section partagée
+ - Mettre en pause une loco, pour que la loco à faible priorité demande l'accés, mais se fait arrété car l'autre (haute priorité) à déjà fait un `request()`
+ - refaire les tests ci-dessus avec et sans l'intertie d'actif.
+
 
 
