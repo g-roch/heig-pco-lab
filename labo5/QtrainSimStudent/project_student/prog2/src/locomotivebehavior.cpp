@@ -30,19 +30,19 @@ void LocomotiveBehavior::run()
   /* A vous de jouer ! */
   const unsigned int NB_TOURS = 1;
   Section s (0, 0);
-  ParcoursIterator begin = parcours.begin();
-  ParcoursIterator end = parcours.end();
+  ParcoursIterator begin = parcours.cbegin();
+  ParcoursIterator end = parcours.cend();
 
   int direction = 1;
   while(1){
     for(unsigned int j = 0; j < NB_TOURS; j++){
         if(direction == 1) {
-          begin = parcours.begin();
-          end = parcours.end();
+          begin = parcours.cbegin();
+          end = parcours.cend();
         }
         else {
-            begin = parcours.rbegin();
-            end = parcours.rend();
+            begin = parcours.crbegin();
+            end = parcours.crend();
         }
       for(ParcoursIterator it = begin; it != end; ++it) {
 

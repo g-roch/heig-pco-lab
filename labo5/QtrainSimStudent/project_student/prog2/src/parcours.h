@@ -25,10 +25,10 @@ public:
     int getPtPassage(size_t) const;
     aiguilles const& getAiguillages(size_t) const;
 
-    ParcoursIterator begin();
-    ParcoursIterator end();
-    ParcoursIterator rbegin();
-    ParcoursIterator rend();
+    ParcoursIterator cbegin();
+    ParcoursIterator cend();
+    ParcoursIterator crbegin();
+    ParcoursIterator crend();
 private:
     std::vector<int> passage;
     std::vector<aiguilles> aiguillage;
@@ -36,68 +36,23 @@ private:
 };
 
 class ParcoursIterator {
-public:
-using aiguille = std::pair<int, int>;
-using aiguilles = std::set<aiguille>;
-//private:
-    Parcours& parcours;
+private:
+    Parcours const& parcours;
     size_t position;
     int direction;
 public:
-    ParcoursIterator(Parcours& parcours, size_t position, int direction = 1)
-        : parcours(parcours), position(position), direction(direction) {
+    ParcoursIterator(Parcours const& parcours, size_t position, int direction = 1);
 
-    }
-    ParcoursIterator& operator = (ParcoursIterator const & other) {
-        parcours = other.parcours;
-        position = other.position;
-        direction = other.direction;
-    }
-    bool operator != (ParcoursIterator const & other) const {
-        return position != other.position or &parcours != &other.parcours;
-    }
-    void operator ++() {
-        position += direction;
-    }
-    aiguilles const& getAiguillages() const {
-        if(direction == 1)
-            return parcours.getAiguillages(position);
-        else
-            if(position == 0)
-                return parcours.getAiguillages(parcours.size()-1);
-            else
-                return parcours.getAiguillages(position-1);
-        }
-    Section getNextSection(int i = 1) const {
-        return Section(
-                    parcours.getPtPassage(position+(i-1)*direction),
-                    parcours.getPtPassage(position+i*direction)
-                    );
-    }
-    Section getLastSection(int i = 1) const {
-        return getNextSection(-i+1);
-    }
-    bool last() const {
-        if(direction == 1)
-            return position == parcours.size()-1;
-        else
-            return position == 0;
-    }
-    bool lastOrBeforeLast() const {
-        if(direction == 1)
-            return position >= parcours.size()-2;
-        else
-            return position < 2;
-    }
-    bool first() const {
-        if(direction == 1)
-            return position == 0;
-        else
-            return position == parcours.size()-1;
-    }
-    int getPtPassage() const {
-        return parcours.getPtPassage(position);
-    }
+    ParcoursIterator& operator = (ParcoursIterator const & other);
+    bool operator != (ParcoursIterator const & other) const;
+    ParcoursIterator& operator ++();
+    Parcours::aiguilles const& getAiguillages() const;
+    Section getNextSection(int i = 1) const;
+    Section getLastSection(int i = 1) const;
+    bool last() const;
+    bool lastOrBeforeLast() const;
+    bool first() const;
+    int getPtPassage() const;
 };
 
 #endif // PARCOURS_H
