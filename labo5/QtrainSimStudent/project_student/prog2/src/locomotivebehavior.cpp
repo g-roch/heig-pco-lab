@@ -33,52 +33,61 @@ void LocomotiveBehavior::run()
   loco.demarrer();
   loco.afficherMessage("Ready!");
 
-  const unsigned int NB_TOURS = 1;
+  const unsigned int NB_TOURS = 2;
 
-  Section s (0, 0);
+  Section section (0, 0);
   ParcoursIterator begin = parcours.cbegin();
   ParcoursIterator end = parcours.cend();
 
   // Init. de la direction qu'on modifiera pour faire demi-tour
   int direction = 1;
 
+  // on est sur la section de départ
+  allSections->get(parcours.cbegin().getSection(-1))->getAccess(loco, priority);
+
   while(1){
+      // Selon la direction, on va commencer d'un côté ou de l'autre du parcours créé
+      if(direction == 1) {
+        begin = parcours.cbegin();
+        end = parcours.cend();
+      } else {
+          begin = parcours.crbegin();
+          end = parcours.crend();
+      }
+
+
     for(unsigned int j = 0; j < NB_TOURS; j++){
-        // Selon la direction, on va commencer d'un côté ou de l'autre du parcours créé
-        if(direction == 1) {
-          begin = parcours.cbegin();
-          end = parcours.cend();
-        } else {
-            begin = parcours.crbegin();
-            end = parcours.crend();
-        }
+        bool last_tour = j == NB_TOURS-1;
+        bool first_tour = j == 0;
 
       // On se lance dans le parcours
       for(ParcoursIterator it = begin; it != end; ++it) {
 
-          // Tant qu'on n'est pas à la fin, on demande la section suivante à parcourir et on essaie d'y accéder
-          if(not it.last()) {
-            s = it.getNextSection();
-            allSections->get(s)->getAccess(loco, priority);
-          }
 
-          // On dirige l'aiguillage
-          for(Parcours::aiguille const & a : it.getAiguillages()) {
+          // On demande l'accès à la section suivante
+            allSections->get(it.getSection())->getAccess(loco, priority);
+
+          // On dirige l'aiguillage de la section suivante
+          for(Parcours::aiguille const & a : it.getAiguillages(+1)) {
             diriger_aiguillage(a.first, a.second, 0);
-            afficher_message(qPrintable(QString(("A%1 = %2 (by %3 )")).arg(a.first).arg(a.second).arg(loco.numero())));
           }
 
-          if(not it.lastOrBeforeLast()) {
-              s = it.getNextSection(2);
-              allSections->get(s)->request(loco, priority);
+          // On indique nos intention pour une section d'avance
+          if(not it.last(1) or not last_tour) {
+              section = it.getSection(+1);
+          } else { // Si on vas faire demi-tour, la prochaine section, c'est la section sur laquel on est !
+              section = it.getSection(-1);
           }
+          allSections->get(section)->request(loco, priority);
 
-          attendre_contact(it.getPtPassage());
+          // On attends le contact que si c'est pas le premier d'un premier tour
+          // ceci afin d'éviter que la loco fasse un tour à vide sans contrôle dans
+          // le cas ou l'inertie n'est pas actif.
+          if(not first_tour or not it.first())
+              attendre_contact(it.getPtPassage());
 
-          if(not it.first()) {
-            s = it.getLastSection();
-            allSections->get(s)->leave(loco);
-          }
+          // On informe la section que l'on vient de la quitter
+            allSections->get(it.getSection(-1))->leave(loco);
        }
     }
 
@@ -87,7 +96,7 @@ void LocomotiveBehavior::run()
     this->loco.inverserSens();
     this->loco.demarrer();
 
-    // On change la direction pour faire demi-tour
+    // On change la direction de la boucle pour faire demi-tour
     direction *= -1;
   }
 

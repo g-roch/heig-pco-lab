@@ -43,8 +43,8 @@ public:
 
     // Obtention d'informations sur le parcours : la taille, le point de passage et l'aiguillage
     size_t size() const noexcept;
-    int getPtPassage(size_t) const;
-    aiguilles const& getAiguillages(size_t) const;
+    int getPtPassage(int) const;
+    aiguilles const& getAiguillages(int) const;
 
     // Itérateurs permettant de parcourir le parcours
     ParcoursIterator cbegin();
@@ -80,28 +80,17 @@ public:
      * \brief getAiguillages Donne l'aiguillage selon la direction suivie et la position de la locomotive
      * (utile dans le cas du demi-tour fait au bout de 2 tours)
      */
-    Parcours::aiguilles const& getAiguillages() const;
+    Parcours::aiguilles const& getAiguillages(int i = 0) const;
     /*!
      * \brief getNextSection Donne la prochaine section parcourue en fonction de la position et de la direction
      * \param i position
      */
-    Section getNextSection(int i = 1) const;
-
-    /*!
-     * \brief getLastSection Donne la dernière section
-     * \param i position
-     */
-    Section getLastSection(int i = 1) const;
+    Section getSection(int i=0) const;
 
     /*!
      * \brief last Permet de savoir si on arrive a la fin du parcours dans un sens ou dans l'autre
      */
-    bool last() const;
-
-    /*!
-     * \brief lastOrBeforeLast Permet de savoir si on arrive vers la fin du parcours dans un sens ou dans l'autre
-     */
-    bool lastOrBeforeLast() const;
+    bool last(unsigned i = 1) const;
 
     /*!
      * \brief first Permet de savoir si on est au début du parcours dans un sens ou dans l'autre

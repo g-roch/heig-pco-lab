@@ -23,12 +23,12 @@ size_t Parcours::size() const noexcept {
     return passage.size();
 }
 
-int Parcours::getPtPassage(size_t i) const {
-    return passage.at(i);
+int Parcours::getPtPassage(int i) const {
+    return passage.at((i+size())%size());
 }
 
-Parcours::aiguilles const& Parcours::getAiguillages(size_t i) const {
-    return aiguillage.at(i);
+Parcours::aiguilles const& Parcours::getAiguillages(int i) const {
+    return aiguillage.at((i+size())%size());
 }
 
 ParcoursIterator Parcours::cbegin() {
@@ -61,34 +61,23 @@ ParcoursIterator& ParcoursIterator::operator ++() {
     position += direction;
     return *this;
 }
-Parcours::aiguilles const& ParcoursIterator::getAiguillages() const {
+Parcours::aiguilles const& ParcoursIterator::getAiguillages(int i) const {
     if(direction == 1)
-        return parcours.getAiguillages(position);
-    else if(position == 0)
-        return parcours.getAiguillages(parcours.size()-1);
+        return parcours.getAiguillages(position+i);
     else
-        return parcours.getAiguillages(position-1);
+        return parcours.getAiguillages(position-(i-1));
  }
-Section ParcoursIterator::getNextSection(int i) const {
+Section ParcoursIterator::getSection(int i) const {
     return Section(
-                parcours.getPtPassage(position+(i-1)*direction),
+                parcours.getPtPassage(position+(i+1)*direction),
                 parcours.getPtPassage(position+i*direction)
                 );
 }
-Section ParcoursIterator::getLastSection(int i) const {
-    return getNextSection(-i+1);
-}
-bool ParcoursIterator::last() const {
+bool ParcoursIterator::last(unsigned i) const {
     if(direction == 1)
-        return position == parcours.size()-1;
+        return position >= parcours.size()-i;
     else
-        return position == 0;
-}
-bool ParcoursIterator::lastOrBeforeLast() const {
-    if(direction == 1)
-        return position >= parcours.size()-2;
-    else
-        return position < 2;
+        return position < i;
 }
 bool ParcoursIterator::first() const {
     if(direction == 1)
