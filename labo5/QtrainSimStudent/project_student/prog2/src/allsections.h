@@ -23,8 +23,19 @@ class AllSections
     AllSections(bool * arretUrgence);
     ~AllSections();
 
+    /*!
+     * \brief Obtient la section partagée correspondant à une section
+     * \param section demandée
+     * \return L'objet de gestion de la section partagée
+     * \note Si la section n'est pas encore définit, une section
+     * partagée est créer silencieusement
+     */
     std::shared_ptr<SharedSection> get(Section section);
 
+    /*!
+     * \brief Ajout une section partagée (peux être entre plus d'un point de contact)
+     * \param contacts List des point de contacts de la section partagée
+     */
     void addSection(std::vector<int> contacts);
 
   private :

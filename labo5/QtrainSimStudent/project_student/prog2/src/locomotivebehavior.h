@@ -24,8 +24,12 @@ class LocomotiveBehavior : public Launchable
 {
   public:
     /*!
-     * \brief locomotiveBehavior Constructeur de la classe
+     * \brief Constructeur de la classe
      * \param loco la locomotive dont on représente le comportement
+     * \param allSections Pointeur vers l'object de gestion de toutes les sections partagée
+     * \param parcours Parcours que la loco doit faire
+     * \param priority Priorité assignée à la loco
+     * \param arretUrgence Pointeur vers une indication si l'arret d'urgence est déclenchée
      */
     LocomotiveBehavior(
         Locomotive& loco,
@@ -36,42 +40,42 @@ class LocomotiveBehavior : public Launchable
 
   protected:
     /*!
-     * \brief run Fonction lancée par le thread, représente le comportement de la locomotive
+     * \brief Fonction lancée par le thread, représente le comportement de la locomotive
      */
     void run() override;
 
     /*!
-     * \brief printStartMessage Message affiché lors du démarrage du thread
+     * \brief Message affiché lors du démarrage du thread
      */
     void printStartMessage() override;
 
     /*!
-     * \brief printCompletionMessage Message affiché lorsque le thread a terminé
+     * \brief Message affiché lorsque le thread a terminé
      */
     void printCompletionMessage() override;
 
-    /**
-     * @brief loco La locomotive dont on représente le comportement
+    /*!
+     * \brief La locomotive dont on représente le comportement
      */
     Locomotive& loco;
 
-    /**
-     * @brief sharedSection Pointeur sur la section partagée
+    /*!
+     * \brief Pointeur sur la gestion des sections partagées
      */
     std::shared_ptr<AllSections> allSections;
 
-    /**
-     * @brief parcours Parcours fait par la locomotive
+    /*!
+     * \brief Parcours fait par la locomotive
      */
     Parcours& parcours;
 
-    /**
-     * @brief priority Priorité de la locomotive pour l'accès à la section partagée
+    /*!
+     * \brief Priorité de la locomotive pour l'accès à la section partagée
      */
     SharedSectionInterface::Priority priority;
 
-    /**
-     * @brief arretUrgence permet de savoir si le boutton d'arret d'urgence est appuyé
+    /*!
+     * \brief permet de savoir si le boutton d'arret d'urgence est appuyé
      */
     bool * arretUrgence;
 };

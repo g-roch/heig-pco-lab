@@ -18,7 +18,7 @@
  * La classe "Parcours" permet de configurer le parcours que les locomotives
  * vont effectuer
  */
-class ParcoursIterator;
+class ParcoursConstIterator;
 
 class Parcours
 {
@@ -41,17 +41,33 @@ class Parcours
      */
     void addPtPassage(int point, aiguilles aiguillage);
 
-    // Obtention d'informations sur le parcours : la taille, le point de passage et l'aiguillage
+    /*!
+     * \brief Taille du parcours
+     * \return la taille
+     */
     size_t size() const noexcept;
-    int getPtPassage(int) const;
-    aiguilles const& getAiguillages(int) const;
+
+    /*!
+     * \brief Obtient un point de passage en fonction de sa position
+     * \param i position du point de passage voulu
+     * \return Numéro du point de passage
+     */
+    int getPtPassage(int i) const;
+
+    /*!
+     * \brief Obtien une liste d'aiguillages en fonction de sa position
+     * \param i position de l'aiguillage voulu
+     * \return liste des aiguillages
+     */
+    aiguilles const& getAiguillages(int i) const;
 
     // Itérateurs permettant de parcourir le parcours
-    ParcoursIterator cbegin();
-    ParcoursIterator cend();
-    ParcoursIterator crbegin();
-    ParcoursIterator crend();
+    ParcoursConstIterator cbegin() const;
+    ParcoursConstIterator cend() const;
+    ParcoursConstIterator crbegin() const;
+    ParcoursConstIterator crend() const;
   private:
+    // Liste des points de passage et des aiguillages
     std::vector<int> passage;
     std::vector<aiguilles> aiguillage;
 };
@@ -61,7 +77,7 @@ class Parcours
  * Cette classe a été implémentée pour permettre d'utiliser une seule boucle for() au moment du demi-tour de
  * la locomotive après 2 tours de circuit
  */
-class ParcoursIterator {
+class ParcoursConstIterator {
   public:
     using aiguille = std::pair<int, int>;
     using aiguilles = std::set<aiguille>;
@@ -70,35 +86,38 @@ class ParcoursIterator {
     size_t position;
     int direction;
   public:
-    ParcoursIterator(Parcours const& parcours, size_t position, int direction = 1);
+    ParcoursConstIterator(Parcours const& parcours, size_t position, int direction = 1);
 
-    ParcoursIterator& operator = (ParcoursIterator const & other);
-    bool operator != (ParcoursIterator const & other) const;
-    ParcoursIterator& operator ++();
+    ParcoursConstIterator& operator = (ParcoursConstIterator const & other);
+    bool operator != (ParcoursConstIterator const & other) const;
+    ParcoursConstIterator& operator ++();
 
     /*!
-     * \brief getAiguillages Donne l'aiguillage selon la direction suivie et la position de la locomotive
+     * \brief Donne l'aiguillage selon la direction suivie et la position de la locomotive
      * (utile dans le cas du demi-tour fait au bout de 2 tours)
      */
     Parcours::aiguilles const& getAiguillages(int i = 0) const;
+
     /*!
-     * \brief getNextSection Donne la prochaine section parcourue en fonction de la position et de la direction
-     * \param i position
+     * \brief Obtient une section relativement à la position actuelle et à la direction
+     * \param i décalage à appliquer
      */
     Section getSection(int i=0) const;
 
     /*!
-     * \brief last Permet de savoir si on arrive a la fin du parcours dans un sens ou dans l'autre
+     * \brief Permet de savoir si on arrive a la fin du parcours dans un sens ou dans l'autre
+     * \param i nombre d'élément encore necessaire
      */
     bool last(unsigned i = 1) const;
 
     /*!
-     * \brief first Permet de savoir si on est au début du parcours dans un sens ou dans l'autre
+     * \brief Permet de savoir si on est au début du parcours dans un sens ou dans l'autre
+     * \param i nombre d'élément encore necessaire
      */
     bool first() const;
 
     /*!
-     * \brief getPtPassage Donne le point de passage en fonction de la position de la loco
+     * \brief Donne le point de passage en fonction de la position de la loco
      */
     int getPtPassage() const;
 };

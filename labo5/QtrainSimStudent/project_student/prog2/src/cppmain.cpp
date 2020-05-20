@@ -32,6 +32,8 @@ void emergency_stop()
   // On arrête les deux locomotives
   locoA.arreter();
   locoB.arreter();
+
+  // on indique au thread de s'arreter s'ils en on la possibilité
   arretUrgence = true;
 
   afficher_message("\nSTOP!");
@@ -42,7 +44,6 @@ void emergency_stop()
 int cmain()
 {
   /************
-
    * Maquette *
    ************/
 
@@ -91,12 +92,10 @@ int cmain()
   // Loco 0
   // Exemple de position de départ
   locoA.fixerPosition(25, 32);
-  //locoA.fixerPosition(16, 23);
 
   // Loco 1
   // Exemple de position de départ
   locoB.fixerPosition(22, 28);
-  //locoB.fixerPosition(13, 19);
 
   /***********
    * Message *
@@ -108,9 +107,6 @@ int cmain()
   /*********************
    * Threads des locos *
    ********************/
-
-  // Création des sections partagées
-  std::shared_ptr<AllSections> sharedSection = std::make_shared<AllSections>(&arretUrgence);
 
   // Création des parcours
   Parcours parcoursB;
@@ -130,7 +126,6 @@ int cmain()
   parcoursB.addPtPassage(30, {{22, TOUT_DROIT}});
   parcoursB.addPtPassage(29);
   parcoursB.addPtPassage(28, {{19, TOUT_DROIT}});
-  //    parcoursB.addPtPassage(22);
 
   // Création des parcours
   Parcours parcoursA;
@@ -138,7 +133,7 @@ int cmain()
   parcoursA.addPtPassage(24, {{15, DEVIE}, {17, TOUT_DROIT}});
   parcoursA.addPtPassage(23, {{14, DEVIE}});
   parcoursA.addPtPassage(16);
-  parcoursA.addPtPassage(15/*, {{9, DEVIE}}*/);
+  parcoursA.addPtPassage(15, {{9, DEVIE}});
   parcoursA.addPtPassage(10, {{8, TOUT_DROIT}, {7, DEVIE}});
   parcoursA.addPtPassage(4);
   parcoursA.addPtPassage(6, {{4, DEVIE}, {3, TOUT_DROIT}});
@@ -146,9 +141,10 @@ int cmain()
   parcoursA.addPtPassage(34);
   parcoursA.addPtPassage(33, {{21, DEVIE}});
   parcoursA.addPtPassage(32, {{20, DEVIE}, {23, TOUT_DROIT}});
-  //    parcoursA.addPtPassage(25);
 
-  // Défini sharedSection
+
+  // Création des sections partagées
+  std::shared_ptr<AllSections> sharedSection = std::make_shared<AllSections>(&arretUrgence);
   sharedSection->addSection({11, 15, 10, 4, 3, 6});
 
   // Création du thread pour la loco 0

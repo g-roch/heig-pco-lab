@@ -35,8 +35,8 @@ void LocomotiveBehavior::run()
 
 
   Section section (0, 0);
-  ParcoursIterator begin = parcours.cbegin();
-  ParcoursIterator end = parcours.cend();
+  ParcoursConstIterator begin = parcours.cbegin();
+  ParcoursConstIterator end = parcours.cend();
 
   // Init. de la direction qu'on modifiera pour faire demi-tour
   int direction = 1;
@@ -60,7 +60,7 @@ void LocomotiveBehavior::run()
       bool first_tour = j == 0;
 
       // On se lance dans le parcours
-      for(ParcoursIterator it = begin; it != end; ++it) {
+      for(ParcoursConstIterator it = begin; it != end; ++it) {
 
 
         // On demande l'accès à la section suivante
@@ -87,6 +87,12 @@ void LocomotiveBehavior::run()
 
         // On informe la section que l'on vient de la quitter
         allSections->get(it.getSection(-1))->leave(loco);
+
+        // Si le boutton d'urgence est pressé
+        if(*arretUrgence) {
+          loco.arreter();
+          return;
+        }
       }
     }
 
