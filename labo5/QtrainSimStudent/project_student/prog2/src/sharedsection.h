@@ -58,47 +58,47 @@ class SharedSection final : public SharedSectionInterface
      * @param priority La priorité de la locomotive qui fait l'appel
      */
     void getAccess(Locomotive &loco, Priority priority) override {
-        afficher_message(qPrintable(QString(("The engine no. %1 getAccess()."+name).c_str()).arg(loco.numero())));
+      afficher_message(qPrintable(QString(("The engine no. %1 getAccess()."+name).c_str()).arg(loco.numero())));
 
-        bool stopped = false;
-        accessMutex.acquire();
+      bool stopped = false;
+      accessMutex.acquire();
 
-        // Tant que la loco ne peut pas accéder à la section, on incrémente le nb de loco en attente et elle attend
-        while(not canAccess(loco, priority)){
-            nbLocoWaiting++;
-            accessMutex.release();
-
-            // On fait en sorte que la loco s'arrête si elle ne l'est pas déjà
-            if(not stopped){
-                loco.arreter();
-                stopped = true;
-            }
-
-            // Accès à la section
-            waiting.acquire();
-
-            accessMutex.acquire();
-            nbLocoWaiting--;
-        }
-
-        // La section n'est pas libre
-        free = false;
-        // On récupère l'id de la loco
-        idLoco = loco.numero();
-        // Incrémente le nombre de loco sur la section
-        ++count;
-        // On décrémente le nb de loco avec la priorité priority en train d'attendre
-        --prioritiesCount[priority];
+      // Tant que la loco ne peut pas accéder à la section, on incrémente le nb de loco en attente et elle attend
+      while(not canAccess(loco, priority)){
+        nbLocoWaiting++;
         accessMutex.release();
 
-        if(stopped and not *arretUrgence)
-            loco.demarrer();
+        // On fait en sorte que la loco s'arrête si elle ne l'est pas déjà
+        if(not stopped){
+          loco.arreter();
+          stopped = true;
+        }
 
-        // Exemple de message dans la console globale
-        afficher_message(qPrintable(QString(("The engine no. %1 accesses the shared section."+name).c_str()).arg(loco.numero())));
+        // Accès à la section
+        waiting.acquire();
+
+        accessMutex.acquire();
+        nbLocoWaiting--;
+      }
+
+      // La section n'est pas libre
+      free = false;
+      // On récupère l'id de la loco
+      idLoco = loco.numero();
+      // Incrémente le nombre de loco sur la section
+      ++count;
+      // On décrémente le nb de loco avec la priorité priority en train d'attendre
+      --prioritiesCount[priority];
+      accessMutex.release();
+
+      if(stopped and not *arretUrgence)
+        loco.demarrer();
+
+      // Exemple de message dans la console globale
+      afficher_message(qPrintable(QString(("The engine no. %1 accesses the shared section."+name).c_str()).arg(loco.numero())));
     }
 
-private:
+  private:
     /**
      * @brief canAccess Teste si la locomotive peut accéder à la section ou si une autre
      * locomotive a une priorité plus élevée
@@ -117,38 +117,38 @@ private:
       return ret or idLoco == loco.numero();
     }
 
-public:
+  public:
     /**
      * @brief leave Méthode à appeler pour indiquer que la locomotive est sortie de la section
      * partagée. (reveille les threads des locomotives potentiellement en attente).
      * @param loco La locomotive qui quitte la section partagée
      */
     void leave(Locomotive& loco) override {
-        afficher_message(qPrintable(QString(("Loco %1 leaves(), "+name).c_str()).arg(loco.numero())));
+      afficher_message(qPrintable(QString(("Loco %1 leaves(), "+name).c_str()).arg(loco.numero())));
 
-        accessMutex.acquire();
-        // On décrémente le nombre de loco sur la section
-        --count;
+      accessMutex.acquire();
+      // On décrémente le nombre de loco sur la section
+      --count;
 
-        // S'il n'y en a plus sur la section, alors elle est libre
-        if(count == 0) {
-          free = true;
+      // S'il n'y en a plus sur la section, alors elle est libre
+      if(count == 0) {
+        free = true;
 
-          // On relâche s'il y a des locomotives en attente
-          if(nbLocoWaiting > 0){
-            waiting.release();
+        // On relâche s'il y a des locomotives en attente
+        if(nbLocoWaiting > 0){
+          waiting.release();
 
-            afficher_message(qPrintable(QString("Loco %1 release()").arg(loco.numero())));
-          }
+          afficher_message(qPrintable(QString("Loco %1 release()").arg(loco.numero())));
         }
+      }
 
-        accessMutex.release();
+      accessMutex.release();
 
-        // Exemple de message dans la console globale
-        afficher_message(qPrintable(QString(("The engine no. %1 leaves the shared section."+name).c_str()).arg(loco.numero())));
+      // Exemple de message dans la console globale
+      afficher_message(qPrintable(QString(("The engine no. %1 leaves the shared section."+name).c_str()).arg(loco.numero())));
     }
 
-private:
+  private:
     // Nom de la section
     std::string name;
     // Sémaphore utilisé comme mutex pour protéger l'accès aux variables

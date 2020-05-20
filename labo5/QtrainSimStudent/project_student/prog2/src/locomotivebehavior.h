@@ -15,24 +15,26 @@
 #include "allsections.h"
 #include "parcours.h"
 
+#define NB_TOURS 2
+
 /**
  * @brief La classe LocomotiveBehavior représente le comportement d'une locomotive
  */
 class LocomotiveBehavior : public Launchable
 {
-public:
+  public:
     /*!
      * \brief locomotiveBehavior Constructeur de la classe
      * \param loco la locomotive dont on représente le comportement
      */
     LocomotiveBehavior(
-            Locomotive& loco,
-            std::shared_ptr<AllSections> allSections,
-            Parcours& parcours,
-            SharedSectionInterface::Priority priority,
-            bool * arretUrgence);
+        Locomotive& loco,
+        std::shared_ptr<AllSections> allSections,
+        Parcours& parcours,
+        SharedSectionInterface::Priority priority,
+        bool * arretUrgence);
 
-protected:
+  protected:
     /*!
      * \brief run Fonction lancée par le thread, représente le comportement de la locomotive
      */

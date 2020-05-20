@@ -22,7 +22,7 @@ class ParcoursIterator;
 
 class Parcours
 {
-public:
+  public:
     using aiguille = std::pair<int, int>;
     using aiguilles = std::set<aiguille>;
 
@@ -51,7 +51,7 @@ public:
     ParcoursIterator cend();
     ParcoursIterator crbegin();
     ParcoursIterator crend();
-private:
+  private:
     std::vector<int> passage;
     std::vector<aiguilles> aiguillage;
 };
@@ -62,14 +62,14 @@ private:
  * la locomotive après 2 tours de circuit
  */
 class ParcoursIterator {
-public:
+  public:
     using aiguille = std::pair<int, int>;
     using aiguilles = std::set<aiguille>;
-private:
+  private:
     Parcours const& parcours;
     size_t position;
     int direction;
-public:
+  public:
     ParcoursIterator(Parcours const& parcours, size_t position, int direction = 1);
 
     ParcoursIterator& operator = (ParcoursIterator const & other);

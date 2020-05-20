@@ -19,7 +19,7 @@
  */
 class AllSections
 {
-public:
+  public:
     AllSections(bool * arretUrgence);
     ~AllSections();
 
@@ -27,7 +27,7 @@ public:
 
     void addSection(std::vector<int> contacts);
 
-private :
+  private :
     PcoSemaphore mutex;
     std::map<Section, std::shared_ptr<SharedSection>> sections;
     bool * arretUrgence;

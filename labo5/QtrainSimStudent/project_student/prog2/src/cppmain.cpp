@@ -29,145 +29,145 @@ static bool arretUrgence = false;
 //Arret d'urgence
 void emergency_stop()
 {
-    // On arrête les deux locomotives
-    locoA.arreter();
-    locoB.arreter();
-    arretUrgence = true;
+  // On arrête les deux locomotives
+  locoA.arreter();
+  locoB.arreter();
+  arretUrgence = true;
 
-    afficher_message("\nSTOP!");
+  afficher_message("\nSTOP!");
 }
 
 
 //Fonction principale
 int cmain()
 {
-    /************
+  /************
 
-     * Maquette *
-     ************/
+   * Maquette *
+   ************/
 
-    //Choix de la maquette (A ou B)
-    selection_maquette(MAQUETTE_A /*MAQUETTE_B*/);
+  //Choix de la maquette (A ou B)
+  selection_maquette(MAQUETTE_A /*MAQUETTE_B*/);
 
-    /**********************************
-     * Initialisation des aiguillages *
-     **********************************/
+  /**********************************
+   * Initialisation des aiguillages *
+   **********************************/
 
-    // Initialisation des aiguillages
-    // Positiion de base donnée comme exemple, vous pouvez la changer comme bon vous semble
-    // Vous devrez utiliser cette fonction pour la section partagée pour aiguiller les locos
-    // sur le bon parcours (par exemple à la sortie de la section partagée) vous pouvez l'
-    // appeler depuis vos thread des locos par ex.
-    diriger_aiguillage(1,  TOUT_DROIT, 0);
-    diriger_aiguillage(2,  DEVIE     , 0);
-    diriger_aiguillage(3,  DEVIE     , 0);
-    diriger_aiguillage(4,  TOUT_DROIT, 0);
-    diriger_aiguillage(5,  TOUT_DROIT, 0);
-    diriger_aiguillage(6,  TOUT_DROIT, 0);
-    diriger_aiguillage(7,  TOUT_DROIT, 0);
-    diriger_aiguillage(8,  DEVIE     , 0);
-    diriger_aiguillage(9,  DEVIE     , 0);
-    diriger_aiguillage(10, TOUT_DROIT, 0);
-    diriger_aiguillage(11, TOUT_DROIT, 0);
-    diriger_aiguillage(12, TOUT_DROIT, 0);
-    diriger_aiguillage(13, TOUT_DROIT, 0);
-    diriger_aiguillage(14, DEVIE     , 0);
-    diriger_aiguillage(15, DEVIE     , 0);
-    diriger_aiguillage(16, TOUT_DROIT, 0);
-    diriger_aiguillage(17, TOUT_DROIT, 0);
-    diriger_aiguillage(18, TOUT_DROIT, 0);
-    diriger_aiguillage(19, TOUT_DROIT, 0);
-    diriger_aiguillage(20, DEVIE     , 0);
-    diriger_aiguillage(21, DEVIE     , 0);
-    diriger_aiguillage(22, TOUT_DROIT, 0);
-    diriger_aiguillage(23, TOUT_DROIT, 0);
-    diriger_aiguillage(24, TOUT_DROIT, 0);
-    // diriger_aiguillage(/*NUMERO*/, /*TOUT_DROIT | DEVIE*/, /*0*/);
+  // Initialisation des aiguillages
+  // Positiion de base donnée comme exemple, vous pouvez la changer comme bon vous semble
+  // Vous devrez utiliser cette fonction pour la section partagée pour aiguiller les locos
+  // sur le bon parcours (par exemple à la sortie de la section partagée) vous pouvez l'
+  // appeler depuis vos thread des locos par ex.
+  diriger_aiguillage(1,  TOUT_DROIT, 0);
+  diriger_aiguillage(2,  DEVIE     , 0);
+  diriger_aiguillage(3,  DEVIE     , 0);
+  diriger_aiguillage(4,  TOUT_DROIT, 0);
+  diriger_aiguillage(5,  TOUT_DROIT, 0);
+  diriger_aiguillage(6,  TOUT_DROIT, 0);
+  diriger_aiguillage(7,  TOUT_DROIT, 0);
+  diriger_aiguillage(8,  DEVIE     , 0);
+  diriger_aiguillage(9,  DEVIE     , 0);
+  diriger_aiguillage(10, TOUT_DROIT, 0);
+  diriger_aiguillage(11, TOUT_DROIT, 0);
+  diriger_aiguillage(12, TOUT_DROIT, 0);
+  diriger_aiguillage(13, TOUT_DROIT, 0);
+  diriger_aiguillage(14, DEVIE     , 0);
+  diriger_aiguillage(15, DEVIE     , 0);
+  diriger_aiguillage(16, TOUT_DROIT, 0);
+  diriger_aiguillage(17, TOUT_DROIT, 0);
+  diriger_aiguillage(18, TOUT_DROIT, 0);
+  diriger_aiguillage(19, TOUT_DROIT, 0);
+  diriger_aiguillage(20, DEVIE     , 0);
+  diriger_aiguillage(21, DEVIE     , 0);
+  diriger_aiguillage(22, TOUT_DROIT, 0);
+  diriger_aiguillage(23, TOUT_DROIT, 0);
+  diriger_aiguillage(24, TOUT_DROIT, 0);
+  // diriger_aiguillage(/*NUMERO*/, /*TOUT_DROIT | DEVIE*/, /*0*/);
 
-    /********************************
-     * Position de départ des locos *
-     ********************************/
+  /********************************
+   * Position de départ des locos *
+   ********************************/
 
-    // Loco 0
-    // Exemple de position de départ
-    locoA.fixerPosition(25, 32);
-    //locoA.fixerPosition(16, 23);
+  // Loco 0
+  // Exemple de position de départ
+  locoA.fixerPosition(25, 32);
+  //locoA.fixerPosition(16, 23);
 
-    // Loco 1
-    // Exemple de position de départ
-    locoB.fixerPosition(22, 28);
-    //locoB.fixerPosition(13, 19);
+  // Loco 1
+  // Exemple de position de départ
+  locoB.fixerPosition(22, 28);
+  //locoB.fixerPosition(13, 19);
 
-    /***********
-     * Message *
-     **********/
+  /***********
+   * Message *
+   **********/
 
-    // Affiche un message dans la console de l'application graphique
-    afficher_message("Hit play to start the simulation...");
+  // Affiche un message dans la console de l'application graphique
+  afficher_message("Hit play to start the simulation...");
 
-    /*********************
-     * Threads des locos *
-     ********************/
+  /*********************
+   * Threads des locos *
+   ********************/
 
-    // Création des sections partagées
-    std::shared_ptr<AllSections> sharedSection = std::make_shared<AllSections>(&arretUrgence);
+  // Création des sections partagées
+  std::shared_ptr<AllSections> sharedSection = std::make_shared<AllSections>(&arretUrgence);
 
-    // Création des parcours
-    Parcours parcoursB;
-    parcoursB.addPtPassage(22);
-    parcoursB.addPtPassage(21, {{16, TOUT_DROIT}});
-    parcoursB.addPtPassage(20);
-    parcoursB.addPtPassage(19, {{13, TOUT_DROIT}});
-    parcoursB.addPtPassage(13);
-    parcoursB.addPtPassage(12, {{10, TOUT_DROIT}});
-    parcoursB.addPtPassage(11);
-    parcoursB.addPtPassage(10, {{7, TOUT_DROIT}});
-    parcoursB.addPtPassage(4);
-    parcoursB.addPtPassage(3, {{4, TOUT_DROIT}});
-    parcoursB.addPtPassage(2);
-    parcoursB.addPtPassage(1, {{1, TOUT_DROIT}});
-    parcoursB.addPtPassage(31);
-    parcoursB.addPtPassage(30, {{22, TOUT_DROIT}});
-    parcoursB.addPtPassage(29);
-    parcoursB.addPtPassage(28, {{19, TOUT_DROIT}});
-//    parcoursB.addPtPassage(22);
+  // Création des parcours
+  Parcours parcoursB;
+  parcoursB.addPtPassage(22);
+  parcoursB.addPtPassage(21, {{16, TOUT_DROIT}});
+  parcoursB.addPtPassage(20);
+  parcoursB.addPtPassage(19, {{13, TOUT_DROIT}});
+  parcoursB.addPtPassage(13);
+  parcoursB.addPtPassage(12, {{10, TOUT_DROIT}});
+  parcoursB.addPtPassage(11);
+  parcoursB.addPtPassage(10, {{7, TOUT_DROIT}});
+  parcoursB.addPtPassage(4);
+  parcoursB.addPtPassage(3, {{4, TOUT_DROIT}});
+  parcoursB.addPtPassage(2);
+  parcoursB.addPtPassage(1, {{1, TOUT_DROIT}});
+  parcoursB.addPtPassage(31);
+  parcoursB.addPtPassage(30, {{22, TOUT_DROIT}});
+  parcoursB.addPtPassage(29);
+  parcoursB.addPtPassage(28, {{19, TOUT_DROIT}});
+  //    parcoursB.addPtPassage(22);
 
-    // Création des parcours
-    Parcours parcoursA;
-    parcoursA.addPtPassage(25);
-    parcoursA.addPtPassage(24, {{15, DEVIE}, {17, TOUT_DROIT}});
-    parcoursA.addPtPassage(23, {{14, DEVIE}});
-    parcoursA.addPtPassage(16);
-    parcoursA.addPtPassage(15/*, {{9, DEVIE}}*/);
-    parcoursA.addPtPassage(10, {{8, TOUT_DROIT}, {7, DEVIE}});
-    parcoursA.addPtPassage(4);
-    parcoursA.addPtPassage(6, {{4, DEVIE}, {3, TOUT_DROIT}});
-    parcoursA.addPtPassage(5, {{2, DEVIE}});
-    parcoursA.addPtPassage(34);
-    parcoursA.addPtPassage(33, {{21, DEVIE}});
-    parcoursA.addPtPassage(32, {{20, DEVIE}, {23, TOUT_DROIT}});
-//    parcoursA.addPtPassage(25);
+  // Création des parcours
+  Parcours parcoursA;
+  parcoursA.addPtPassage(25);
+  parcoursA.addPtPassage(24, {{15, DEVIE}, {17, TOUT_DROIT}});
+  parcoursA.addPtPassage(23, {{14, DEVIE}});
+  parcoursA.addPtPassage(16);
+  parcoursA.addPtPassage(15/*, {{9, DEVIE}}*/);
+  parcoursA.addPtPassage(10, {{8, TOUT_DROIT}, {7, DEVIE}});
+  parcoursA.addPtPassage(4);
+  parcoursA.addPtPassage(6, {{4, DEVIE}, {3, TOUT_DROIT}});
+  parcoursA.addPtPassage(5, {{2, DEVIE}});
+  parcoursA.addPtPassage(34);
+  parcoursA.addPtPassage(33, {{21, DEVIE}});
+  parcoursA.addPtPassage(32, {{20, DEVIE}, {23, TOUT_DROIT}});
+  //    parcoursA.addPtPassage(25);
 
-    // Défini sharedSection
-    sharedSection->addSection({11, 15, 10, 4, 3, 6});
+  // Défini sharedSection
+  sharedSection->addSection({11, 15, 10, 4, 3, 6});
 
-    // Création du thread pour la loco 0
-    std::unique_ptr<Launchable> locoBehaveA = std::make_unique<LocomotiveBehavior>(locoA, sharedSection, parcoursA, SharedSectionInterface::Priority::LowPriority, &arretUrgence);
-    // Création du thread pour la loco 1
-    std::unique_ptr<Launchable> locoBehaveB = std::make_unique<LocomotiveBehavior>(locoB, sharedSection, parcoursB, SharedSectionInterface::Priority::HighPriority, &arretUrgence);
+  // Création du thread pour la loco 0
+  std::unique_ptr<Launchable> locoBehaveA = std::make_unique<LocomotiveBehavior>(locoA, sharedSection, parcoursA, SharedSectionInterface::Priority::LowPriority, &arretUrgence);
+  // Création du thread pour la loco 1
+  std::unique_ptr<Launchable> locoBehaveB = std::make_unique<LocomotiveBehavior>(locoB, sharedSection, parcoursB, SharedSectionInterface::Priority::HighPriority, &arretUrgence);
 
-    // Lanchement des threads
-    afficher_message(qPrintable(QString("Lancement thread loco A (numéro %1)").arg(locoB.numero())));
-    locoBehaveA->startThread();
-    afficher_message(qPrintable(QString("Lancement thread loco B (numéro %1)").arg(locoA.numero())));
-    locoBehaveB->startThread();
+  // Lanchement des threads
+  afficher_message(qPrintable(QString("Lancement thread loco A (numéro %1)").arg(locoB.numero())));
+  locoBehaveA->startThread();
+  afficher_message(qPrintable(QString("Lancement thread loco B (numéro %1)").arg(locoA.numero())));
+  locoBehaveB->startThread();
 
-    // Attente sur la fin des threads
-    locoBehaveA->join();
-    locoBehaveB->join();
+  // Attente sur la fin des threads
+  locoBehaveA->join();
+  locoBehaveB->join();
 
-    //Fin de la simulation
-    mettre_maquette_hors_service();
+  //Fin de la simulation
+  mettre_maquette_hors_service();
 
-    return EXIT_SUCCESS;
+  return EXIT_SUCCESS;
 }
