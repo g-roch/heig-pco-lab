@@ -53,18 +53,19 @@ protected:
      */
     std::shared_ptr<AllSections> allSections;
 
-    /*
-     * Vous êtes libres d'ajouter des méthodes ou attributs
-     *
-     * Par exemple la priorité ou le parcours
+    /**
+     * @brief mutexSections Mutex protégeant l'accès aux variables
      */
-
-    //static std::map<std::pair<int, int>, SharedSection> sections; // = std::map<std::pair<int, int>, SharedSection> ();
-
     static PcoSemaphore mutexSections;
 
+    /**
+     * @brief parcours Parcours fait par la locomotive
+     */
     Parcours& parcours;
 
+    /**
+     * @brief priority Priorité de la locomotive pour l'accès à la section partagée
+     */
     SharedSectionInterface::Priority priority;
 };
 #endif
