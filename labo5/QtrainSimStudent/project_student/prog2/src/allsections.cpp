@@ -1,16 +1,16 @@
+//    ___  _________    ___  ___  ___  ___  //
+//   / _ \/ ___/ __ \  |_  |/ _ \|_  |/ _ \ //
+//  / ___/ /__/ /_/ / / __// // / __// // / //
+// /_/   \___/\____/ /____/\___/____/\___/  //
+//                                          //
+// Auteurs : Roch Gabriel, Wojciechowski Cassandre
+//
 #include "allsections.h"
 
-AllSections::AllSections() : mutex(1), sections()
-{
+AllSections::AllSections() : mutex(1), sections() { }
 
-}
+AllSections::~AllSections() { }
 
-AllSections::~AllSections()
-{
-
-}
-
-//SharedSection* AllSections::get(Section section)
 std::shared_ptr<SharedSection> AllSections::get(Section section)
 {
   mutex.acquire();
@@ -23,21 +23,24 @@ std::shared_ptr<SharedSection> AllSections::get(Section section)
     name += std::to_string(section.second);
     sections.insert({section, std::make_shared<SharedSection>(name)});
   }
+
   ret = sections.at(section);
   mutex.release();
 
   return ret;
 }
 
-  void 
-AllSections::addSection(std::vector<int> contacts)
+void AllSections::addSection(std::vector<int> contacts)
 {
   std::string name = "";
+
   for(int i : contacts) {
     name += std::to_string(i);
     name += ' ';
   }
+
   std::shared_ptr<SharedSection> section = std::make_shared<SharedSection>(name);
+
   for(int a : contacts) {
     for(int b : contacts) {
       if(a != b) {

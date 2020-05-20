@@ -3,7 +3,7 @@
 //  / ___/ /__/ /_/ / / __// // / __// // / //
 // /_/   \___/\____/ /____/\___/____/\___/  //
 //                                          //
-// Auteurs : Nom Prénom, Nom Prénom
+// Auteurs : Roch Gabriel, Wojciechowski Cassandre
 //
 #include "ctrain_handler.h"
 
@@ -26,7 +26,7 @@ static Locomotive locoB(42 /* Numéro (pour commande trains sur maquette réelle
 //Arret d'urgence
 void emergency_stop()
 {
-    // TODO
+    // On arrête les deux locomotives
     locoA.arreter();
     locoB.arreter();
 
@@ -144,7 +144,6 @@ int cmain()
 
     // Défini sharedSection
     sharedSection->addSection({11, 15, 10, 4, 3, 6});
-    //sharedSection->addSection({4, 3, 6});
 
     // Création du thread pour la loco 0
     std::unique_ptr<Launchable> locoBehaveA = std::make_unique<LocomotiveBehavior>(locoA, sharedSection, parcoursA, SharedSectionInterface::Priority::LowPriority /*, autres paramètres ...*/);
