@@ -20,7 +20,7 @@
 class AllSections
 {
 public:
-    AllSections();
+    AllSections(bool * arretUrgence);
     ~AllSections();
 
     std::shared_ptr<SharedSection> get(Section section);
@@ -30,6 +30,7 @@ public:
 private :
     PcoSemaphore mutex;
     std::map<Section, std::shared_ptr<SharedSection>> sections;
+    bool * arretUrgence;
 };
 
 #endif // ALLSECTIONS_H

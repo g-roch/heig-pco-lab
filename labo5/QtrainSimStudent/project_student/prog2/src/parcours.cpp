@@ -27,7 +27,7 @@ int Parcours::getPtPassage(size_t i) const {
     return passage.at(i);
 }
 
-Parcours::aiguilles const& Parcours::getAiguillages(size_t i) const{
+Parcours::aiguilles const& Parcours::getAiguillages(size_t i) const {
     return aiguillage.at(i);
 }
 
@@ -64,11 +64,10 @@ ParcoursIterator& ParcoursIterator::operator ++() {
 Parcours::aiguilles const& ParcoursIterator::getAiguillages() const {
     if(direction == 1)
         return parcours.getAiguillages(position);
+    else if(position == 0)
+        return parcours.getAiguillages(parcours.size()-1);
     else
-        if(position == 0)
-            return parcours.getAiguillages(parcours.size()-1);
-        else
-            return parcours.getAiguillages(position-1);
+        return parcours.getAiguillages(position-1);
  }
 Section ParcoursIterator::getNextSection(int i) const {
     return Section(

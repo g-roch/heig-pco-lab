@@ -29,7 +29,7 @@ class SharedSection final : public SharedSectionInterface
     /**
      * @brief SharedSection Constructeur de la classe qui représente la section partagée.
      */
-    SharedSection(std::string name) : name(name), accessMutex(1), free(true), waiting(1), nbLocoWaiting(0), prioritiesCount() { }
+    SharedSection(std::string name, bool * arretUrgence) : name(name), accessMutex(1), free(true), waiting(1), nbLocoWaiting(0), prioritiesCount(), arretUrgence(arretUrgence) { }
 
     /**
      * @brief request Méthode a appeler pour indiquer que la locomotive désire accéder à la
@@ -91,7 +91,8 @@ class SharedSection final : public SharedSectionInterface
         --prioritiesCount[priority];
         accessMutex.release();
 
-        loco.demarrer();
+        if(stopped and not *arretUrgence)
+            loco.demarrer();
 
         // Exemple de message dans la console globale
         afficher_message(qPrintable(QString(("The engine no. %1 accesses the shared section."+name).c_str()).arg(loco.numero())));
@@ -164,6 +165,8 @@ private:
     int idLoco;
     // Indique le nombre de loco sur une section
     int count;
+    // Indication boutton arret d'urgence
+    bool * arretUrgence;
 };
 
 

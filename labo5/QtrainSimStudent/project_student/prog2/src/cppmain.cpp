@@ -23,12 +23,16 @@ static Locomotive locoA(7 /* Numéro (pour commande trains sur maquette réelle)
 // Locomotive B
 static Locomotive locoB(42 /* Numéro (pour commande trains sur maquette réelle) */, 12 /* Vitesse */);
 
+// Status arret urgence
+static bool arretUrgence = false;
+
 //Arret d'urgence
 void emergency_stop()
 {
     // On arrête les deux locomotives
     locoA.arreter();
     locoB.arreter();
+    arretUrgence = true;
 
     afficher_message("\nSTOP!");
 }
@@ -87,10 +91,12 @@ int cmain()
     // Loco 0
     // Exemple de position de départ
     locoA.fixerPosition(25, 32);
+    //locoA.fixerPosition(16, 23);
 
     // Loco 1
     // Exemple de position de départ
     locoB.fixerPosition(22, 28);
+    //locoB.fixerPosition(13, 19);
 
     /***********
      * Message *
@@ -104,7 +110,7 @@ int cmain()
      ********************/
 
     // Création des sections partagées
-    std::shared_ptr<AllSections> sharedSection = std::make_shared<AllSections>();
+    std::shared_ptr<AllSections> sharedSection = std::make_shared<AllSections>(&arretUrgence);
 
     // Création des parcours
     Parcours parcoursB;
@@ -124,7 +130,7 @@ int cmain()
     parcoursB.addPtPassage(30, {{22, TOUT_DROIT}});
     parcoursB.addPtPassage(29);
     parcoursB.addPtPassage(28, {{19, TOUT_DROIT}});
-    parcoursB.addPtPassage(22);
+//    parcoursB.addPtPassage(22);
 
     // Création des parcours
     Parcours parcoursA;
@@ -132,7 +138,7 @@ int cmain()
     parcoursA.addPtPassage(24, {{15, DEVIE}, {17, TOUT_DROIT}});
     parcoursA.addPtPassage(23, {{14, DEVIE}});
     parcoursA.addPtPassage(16);
-    parcoursA.addPtPassage(15, {{9, DEVIE}});
+    parcoursA.addPtPassage(15/*, {{9, DEVIE}}*/);
     parcoursA.addPtPassage(10, {{8, TOUT_DROIT}, {7, DEVIE}});
     parcoursA.addPtPassage(4);
     parcoursA.addPtPassage(6, {{4, DEVIE}, {3, TOUT_DROIT}});
@@ -140,15 +146,15 @@ int cmain()
     parcoursA.addPtPassage(34);
     parcoursA.addPtPassage(33, {{21, DEVIE}});
     parcoursA.addPtPassage(32, {{20, DEVIE}, {23, TOUT_DROIT}});
-    parcoursA.addPtPassage(25);
+//    parcoursA.addPtPassage(25);
 
     // Défini sharedSection
     sharedSection->addSection({11, 15, 10, 4, 3, 6});
 
     // Création du thread pour la loco 0
-    std::unique_ptr<Launchable> locoBehaveA = std::make_unique<LocomotiveBehavior>(locoA, sharedSection, parcoursA, SharedSectionInterface::Priority::LowPriority /*, autres paramètres ...*/);
+    std::unique_ptr<Launchable> locoBehaveA = std::make_unique<LocomotiveBehavior>(locoA, sharedSection, parcoursA, SharedSectionInterface::Priority::LowPriority, &arretUrgence);
     // Création du thread pour la loco 1
-    std::unique_ptr<Launchable> locoBehaveB = std::make_unique<LocomotiveBehavior>(locoB, sharedSection, parcoursB, SharedSectionInterface::Priority::HighPriority /*, autres paramètres ...*/);
+    std::unique_ptr<Launchable> locoBehaveB = std::make_unique<LocomotiveBehavior>(locoB, sharedSection, parcoursB, SharedSectionInterface::Priority::HighPriority, &arretUrgence);
 
     // Lanchement des threads
     afficher_message(qPrintable(QString("Lancement thread loco A (numéro %1)").arg(locoB.numero())));

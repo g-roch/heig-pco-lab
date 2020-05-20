@@ -7,7 +7,7 @@
 //
 #include "allsections.h"
 
-AllSections::AllSections() : mutex(1), sections() { }
+AllSections::AllSections(bool * arretUrgence) : mutex(1), sections(), arretUrgence(arretUrgence) { }
 
 AllSections::~AllSections() { }
 
@@ -21,7 +21,7 @@ std::shared_ptr<SharedSection> AllSections::get(Section section)
     name += std::to_string(section.first);
     name += " ";
     name += std::to_string(section.second);
-    sections.insert({section, std::make_shared<SharedSection>(name)});
+    sections.insert({section, std::make_shared<SharedSection>(name, arretUrgence)});
   }
 
   ret = sections.at(section);
@@ -39,7 +39,7 @@ void AllSections::addSection(std::vector<int> contacts)
     name += ' ';
   }
 
-  std::shared_ptr<SharedSection> section = std::make_shared<SharedSection>(name);
+  std::shared_ptr<SharedSection> section = std::make_shared<SharedSection>(name, arretUrgence);
 
   for(int a : contacts) {
     for(int b : contacts) {

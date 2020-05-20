@@ -15,14 +15,16 @@
 LocomotiveBehavior::LocomotiveBehavior(Locomotive& loco,
                                        std::shared_ptr<AllSections> sharedSection,
                                        Parcours& parcours,
-                                       SharedSectionInterface::Priority priority)
-                                       :
+                                       SharedSectionInterface::Priority priority,
+                                       bool * arretUrgence
+                                    ) :
                                        loco(loco),
                                        allSections(sharedSection),
                                        parcours(parcours),
-                                       priority(priority) { }
+                                       priority(priority),
+                                       arretUrgence(arretUrgence)
+{ }
 
-PcoSemaphore LocomotiveBehavior::mutexSections(1);
 
 void LocomotiveBehavior::run()
 {
@@ -31,7 +33,7 @@ void LocomotiveBehavior::run()
   loco.demarrer();
   loco.afficherMessage("Ready!");
 
-  const unsigned int NB_TOURS = 2;
+  const unsigned int NB_TOURS = 1;
 
   Section s (0, 0);
   ParcoursIterator begin = parcours.cbegin();
@@ -53,15 +55,17 @@ void LocomotiveBehavior::run()
 
       // On se lance dans le parcours
       for(ParcoursIterator it = begin; it != end; ++it) {
-          // On dirige l'aiguillage
-          for(Parcours::aiguille const & a : it.getAiguillages()) {
-            diriger_aiguillage(a.first, a.second, 0);
-          }
 
           // Tant qu'on n'est pas à la fin, on demande la section suivante à parcourir et on essaie d'y accéder
           if(not it.last()) {
             s = it.getNextSection();
             allSections->get(s)->getAccess(loco, priority);
+          }
+
+          // On dirige l'aiguillage
+          for(Parcours::aiguille const & a : it.getAiguillages()) {
+            diriger_aiguillage(a.first, a.second, 0);
+            afficher_message(qPrintable(QString(("A%1 = %2 (by %3 )")).arg(a.first).arg(a.second).arg(loco.numero())));
           }
 
           if(not it.lastOrBeforeLast()) {

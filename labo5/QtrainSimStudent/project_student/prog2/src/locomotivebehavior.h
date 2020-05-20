@@ -25,7 +25,12 @@ public:
      * \brief locomotiveBehavior Constructeur de la classe
      * \param loco la locomotive dont on représente le comportement
      */
-    LocomotiveBehavior(Locomotive& loco, std::shared_ptr<AllSections> allSections, Parcours& parcours, SharedSectionInterface::Priority priority /*, autres paramètres éventuels */);
+    LocomotiveBehavior(
+            Locomotive& loco,
+            std::shared_ptr<AllSections> allSections,
+            Parcours& parcours,
+            SharedSectionInterface::Priority priority,
+            bool * arretUrgence);
 
 protected:
     /*!
@@ -54,11 +59,6 @@ protected:
     std::shared_ptr<AllSections> allSections;
 
     /**
-     * @brief mutexSections Mutex protégeant l'accès aux variables
-     */
-    static PcoSemaphore mutexSections;
-
-    /**
      * @brief parcours Parcours fait par la locomotive
      */
     Parcours& parcours;
@@ -67,5 +67,10 @@ protected:
      * @brief priority Priorité de la locomotive pour l'accès à la section partagée
      */
     SharedSectionInterface::Priority priority;
+
+    /**
+     * @brief arretUrgence permet de savoir si le boutton d'arret d'urgence est appuyé
+     */
+    bool * arretUrgence;
 };
 #endif
