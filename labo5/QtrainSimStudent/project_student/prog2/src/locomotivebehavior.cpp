@@ -41,7 +41,7 @@ void LocomotiveBehavior::run()
   // Init. de la direction qu'on modifiera pour faire demi-tour
   int direction = 1;
 
-  // on est sur la section de départ
+  // On est sur la section de départ
   allSections->get(parcours.cbegin().getSection(-1))->getAccess(loco, priority);
 
   while(1){
@@ -71,17 +71,17 @@ void LocomotiveBehavior::run()
           diriger_aiguillage(a.first, a.second, 0);
         }
 
-        // On indique nos intention pour une section d'avance
+        // On indique nos intentions pour une section d'avance
         if(not it.last(1) or not last_tour) {
           section = it.getSection(+1);
-        } else { // Si on vas faire demi-tour, la prochaine section, c'est la section sur laquel on est !
+        } else { // Si on va faire demi-tour, la prochaine section, c'est la section sur laquelle on est !
           section = it.getSection(-1);
         }
         allSections->get(section)->request(loco, priority);
 
-        // On attends le contact que si c'est pas le premier d'un premier tour
+        // On n'attend le contact uniquement si ce n'est pas le premier d'un premier tour,
         // ceci afin d'éviter que la loco fasse un tour à vide sans contrôle dans
-        // le cas ou l'inertie n'est pas actif.
+        // le cas où l'inertie n'est pas activée
         if(not first_tour or not it.first())
           attendre_contact(it.getPtPassage());
 

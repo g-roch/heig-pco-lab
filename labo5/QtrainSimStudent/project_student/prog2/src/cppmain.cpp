@@ -33,7 +33,7 @@ void emergency_stop()
   locoA.arreter();
   locoB.arreter();
 
-  // on indique au thread de s'arreter s'ils en on la possibilité
+  // On indique aux threads de s'arreter s'ils en ont la possibilité
   arretUrgence = true;
 
   afficher_message("\nSTOP!");
