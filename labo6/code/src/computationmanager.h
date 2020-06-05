@@ -3,7 +3,7 @@
 //  / ___/ /__/ /_/ / / __// // / __// // / //
 // /_/   \___/\____/ /____/\___/____/\___/  //
 //                                          //
-// Auteurs : Prénom Nom, Prénom Nom
+// Auteurs : Cassandre Wojciechowski et Gabriel Roch
 
 // La déclaration de la classe ComputationManager se trouve en bas du fichier,
 // ajoutez-y les attributs (et fonctions au besoin) pour votre implémentation.
@@ -19,6 +19,10 @@
 #include <memory>
 
 #include "pcosynchro/pcohoaremonitor.h"
+
+#include <set>
+#include <iostream>
+
 
 /**
  * @brief The ComputationType enum represents the abstract computation types that are available
@@ -191,12 +195,51 @@ protected:
     bool stopped = false;
 
 private:
+
+
+    class PriorityResult {
+    private:
+        Result result;
+    public:
+        PriorityResult(Result const & result) : result(result) { }
+        bool operator> (PriorityResult const & other) const {
+            return result.getId() > other.result.getId();
+        }
+        Result const & getResult() const { return  result; }
+    };
+
+
     /**
      * @brief throwStopException Throws a StopException (will be handled by the caller)
      */
-    inline void throwStopException() {throw StopException();}
+    inline void throwStopException() {
+        std::cout << "throwStopException()" << std::endl;
+        throw StopException();
+    }
 
     int nextId = 0;
+    int nextIdOutput = 0;
+
+    std::vector<Condition> inputNotEmpty;
+    std::vector<Condition> inputNotFull;
+    std::vector<std::queue<Request>> queueInput;
+    std::vector<int> inputNotEmptyNbThreadWaiting;
+    std::vector<int> inputNotFullNbThreadWaiting;
+
+    Condition outputNotEmpty;
+    std::priority_queue<
+        PriorityResult,
+        std::vector<PriorityResult>,
+        std::greater<PriorityResult>
+    > queueOutput;
+
+    std::set<int> abortedSet;
+    std::priority_queue<
+        int,
+        std::vector<int>,
+        std::greater<int>
+    > nextAbortResult;
+
 };
 
 #endif // COMPUTATIONMANAGER_H
