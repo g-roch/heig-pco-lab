@@ -185,7 +185,7 @@ bool ComputationManager::continueWork(int id) {
 
     monitorOut();
 
-    // On retourn true si l'utilisateur n'a pas appuyer sur le bouton stop
+    // On retourne true si l'utilisateur n'a pas appuyé sur le bouton stop
     return true and not stopped;
 }
 
@@ -196,7 +196,7 @@ bool ComputationManager::continueWork(int id) {
 void ComputationManager::provideResult(Result result) {
     monitorIn();
 
-    // On ajout le resultat dans la file d'outputs
+    // On ajout le résultat dans la file d'outputs
     queueOutput.push(result);
 
     // On signale qu'il y a un nouvel élément dans la file d'ouptuts
@@ -215,7 +215,7 @@ void ComputationManager::stop() {
     // On arrête
     stopped = true;
 
-    // On réveille tous les threads qui ont peuvent être dans un wait()
+    // On réveille tous les threads qui peuvent être dans un wait()
     signal(outputNotEmpty);
     for (size_t i = 0; i < COMPUTATION_TYPE_SIZE; ++i) {
 

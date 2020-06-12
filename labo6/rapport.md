@@ -30,7 +30,12 @@ Nous allons ensuite récupérer la requête qui a été mise dans le vector queu
 
 ##### Tests
 
-
+- Faire 15 demandes de calcul pour 1 type et vérifier si l'attente est correctement faite : 
+  - Les calculs se font dans l'ordre correct et sans bug
+- Vérifier que les calculs mis en attente se font ensuite dans l'ordre après avoir été réveillés
+  - Quand le 10ème calcul a été effectué, les suivants se font dans l'ordre croissant des identifiants
+- Tester d'appuyer sur stop 
+  - Quand on appuie sur le bouton stop, les calculs sont arrêtés
 
 #### Etape 2
 
