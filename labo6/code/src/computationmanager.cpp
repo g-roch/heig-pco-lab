@@ -173,10 +173,9 @@ Request ComputationManager::getWork(ComputationType computationType) {
 bool ComputationManager::continueWork(int id) {
     monitorIn();
 
-    // On cherche si le calcul avec l'identifiant id est dans le set des calculs annulés
+    // Si le calcul avec l'identifiant id est dans le set des calculs annulés
+    // → On le supprime de la liste et on retourne faux
     auto localFind = abortedSet.find(id);
-
-    // Si oui, alors on le supprime et on retourne faux
     if(localFind != abortedSet.end()) {
         abortedSet.erase(localFind);
 
@@ -186,7 +185,7 @@ bool ComputationManager::continueWork(int id) {
 
     monitorOut();
 
-    // Si non, alors on retourne vrai, pourvu que les threads n'aient pas été arrêtés
+    // On retourn true si l'utilisateur n'a pas appuyer sur le bouton stop
     return true and not stopped;
 }
 
@@ -197,8 +196,7 @@ bool ComputationManager::continueWork(int id) {
 void ComputationManager::provideResult(Result result) {
     monitorIn();
 
-    // On affiche l'identifiant du résultat et on le met dans la file d'outputs
-    std::cout << result.getId() << std::endl;
+    // On ajout le resultat dans la file d'outputs
     queueOutput.push(result);
 
     // On signale qu'il y a un nouvel élément dans la file d'ouptuts
@@ -217,9 +215,8 @@ void ComputationManager::stop() {
     // On arrête
     stopped = true;
 
-    // On réveille tous les threads qui ont pu rencontrer un wait()
+    // On réveille tous les threads qui ont peuvent être dans un wait()
     signal(outputNotEmpty);
-
     for (size_t i = 0; i < COMPUTATION_TYPE_SIZE; ++i) {
 
         for(int j = 0; j <= inputNotEmptyNbThreadWaiting[i]; ++j)

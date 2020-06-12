@@ -218,6 +218,7 @@ private:
      * @brief ID qu'aura le prochain calcul à entrer dans la file d'attente
      */
     int nextId = 0;
+
     /**
      * @brief ID du prochain résultat à retourner
      */
@@ -228,6 +229,7 @@ private:
      *        (un par ComputationType)
      */
     std::vector<Condition> inputNotEmpty;
+
     /**
      * @brief Condition d'attente pour avoir de la place dans la file d'entrée 
      *        (une par ComputationType)
@@ -238,11 +240,13 @@ private:
      * @brief File d'attente d'entrée pour les calculs (une `queue` par ComputationType)
      */
     std::vector<std::queue<Request>> queueInput;
+
     /**
      * @brief Nombre de threads en attente de contenu dans la file d'entrée (un compteur
      *        par ComputationType)
      */
     std::vector<int> inputNotEmptyNbThreadWaiting;
+
     /**
      * @brief Nombre de threads en attente de place dans la file d'entrée (un compteur
      *        par ComputationType)
@@ -253,6 +257,7 @@ private:
      * @brief Condition d'attente pour avoir au moins 1 élément dans la file de sortie
      */
     Condition outputNotEmpty;
+
     /**
      * @brief File d'attente de sortie pour les calculs.
      *        Le calcul avec le plus petit identifiant se trouve toujours au sommet.
@@ -268,6 +273,7 @@ private:
      *        au thread de calcul
      */
     std::set<int> abortedSet;
+
     /**
      * @brief File d'identifiants de calculs annulés qui n'ont pas encore été supprimés
      *        de la file de sortie.
