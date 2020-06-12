@@ -2,11 +2,11 @@
 
 Auteurs: Gabriel Roch, Cassandre Wojciechowski
 
-#### Etape 1
+### Etape 1
 
-##### Choix d'implémentation
+#### Choix d'implémentation
 
-**— int requestComputation(Computation c);**
+##### `int requestComputation(Computation c);`
 
 Nous avons créé un vector de taille 3 contenant des "Request" nommé "queueInput" pour que chaque cellule du vector corresponde à un type de calcul. Nous avons également créé un vector "inputNotFullNbThreadWaiting" comme celui décrit précédemment mais contenant des "int" afin de compter combien de calculs de chaque type sont à faire.
 
@@ -18,7 +18,7 @@ Si l'arrêt des threads est demandé, alors on sort du moniteur et on lance l'ex
 
 Nous mettons effectivement la requête dans le vector queueInput, puis nous allons ensuite faire le signal pour réveiller un autre thread qui pourra lancer une demande de calcul à son tour. La méthode retourne l'identifiant du calcul qui vient d'être demandé. 
 
-**— Request getWork(ComputationType computationType);**
+##### `Request getWork(ComputationType computationType);`
 
 Nous avons créé un vector "inputNotEmptyNbThreadWaiting" comme ceux décrits précédemment contenant des "int" afin de compter combien de calculs de chaque type sont à faire. 
 
@@ -28,7 +28,7 @@ Si l'arrêt des threads est demandé, alors on sort du moniteur et on lance l'ex
 
 Nous allons ensuite récupérer la requête qui a été mise dans le vector queueInput, la stocker dans une variable Request front et la supprimer du vector. Cela permet de garder l'ordre des requêtes. Nous effectuons un signal() pour qu'un thread se réveille et puisse effectuer une nouvelle requête et on retourne la requête front. 
 
-##### Tests
+#### Tests
 
 - Faire 15 demandes de calcul pour 1 type et vérifier si l'attente est correctement faite : 
   - Les calculs se font dans l'ordre correct et sans bug
@@ -37,11 +37,11 @@ Nous allons ensuite récupérer la requête qui a été mise dans le vector queu
 - Tester d'appuyer sur stop 
   - Quand on appuie sur le bouton stop, les calculs sont arrêtés
 
-#### Etape 2
+### Etape 2
 
-##### Choix d'implémentation
+#### Choix d'implémentation
 
-**— Result getNextResult());**
+##### `Result getNextResult());`
 
 Nous avons créé une queue de priorité "queueOutput" qui va permettre de gérer la priorité des résultats à afficher ainsi qu'une seconde queue de priorité "nextAbortResult" pour gérer le cas où un calcul aurait été annulé après avoir été effectué et avant d'avoir été affiché. 
 
@@ -51,21 +51,21 @@ Comme dans les méthodes précédentes, si les threads doivent s'arrêter alors 
 
 Ensuite, nous incrémentons l'identifiant du prochain résultat à afficher à l'écran et nous récupérons celui que nous voulons afficher actuellement depuis la queue dans une variable "Result ret". On retire ce résultat de la queue et on le retourne à la fin de la méthode. 
 
-**— void provideResult(Result result);**
+##### `void provideResult(Result result);`
 
 La méthode provideResult permet d'afficher à l'écran le résultat et de le mettre dans la queue de priorité "queueOutput". 
 
 Elle va ensuite faire un signal sur la condition "outputNotEmpty" pour réveiller des threads qui voudraient mettre un résultat dans la queue dans la méthode "getNextResult". 
 
-##### Tests
+#### Tests
 
 
 
-#### Etape 3
+### Etape 3
 
-##### Choix d'implémentation
+#### Choix d'implémentation
 
-**— void abortComputation(int id);**
+##### `void abortComputation(int id);`
 
 Nous avons créé un set "abortedSet" permettant de stocker les identifiants des calculs qui ont été annulés. 
 
@@ -73,27 +73,27 @@ Dans la méthode "abortComputation", nous allons insérer les identifiants des c
 
 Nous faisons ensuite un signal sur la condition "outputNotEmpty" pour réveiller des threads qui voudraient mettre un résultat dans la queue dans la méthode "getNextResult" pour remplacer ceux qui ont été annulés.
 
-**— bool continueWork(int id);**
+##### `bool continueWork(int id);`
 
 Cette méthode va chercher l'identifiant du calcul (passé en paramètre) dans "abortedSet". Si elle le trouve, elle va le supprimer du set et retourner "false" pour indiquer qu'il ne faut pas continuer à travailler sur ce calcul car il a été annulé. 
 
 Si elle ne le trouve pas, alors elle va retourner "true and not stopped" car il faut de nouveau vérifier si les threads n'ont pas été arrêtés entre temps.
 
-##### Tests
+#### Tests
 
 
 
-#### Etape 4
+### Etape 4
 
-##### Choix d'implémentation
+#### Choix d'implémentation
 
-**— void stop();**
+##### `void stop();`
 
 Dans cette méthode, on va setter la variable booléenne "stopped" à vrai et réveiller les threads en attente. Pour réveiller les threads, nous utilisons trois boucles "for" pour être sûr de réveiller tous les threads sur lesquels nous avons pu faire un "wait()". 
 
-**— private: void throwStopException();**
+##### `private: void throwStopException();`
 
 Cette méthode va permettre d'afficher que l'exception a été lancée et va ensuite lancer l'exception "StopException()". 
 
-##### Tests
+#### Tests
 
