@@ -5,24 +5,17 @@
 //                                          //
 // Auteurs : Cassandre Wojciechowski et Gabriel Roch
 
-// La déclaration de la classe ComputationManager se trouve en bas du fichier,
-// ajoutez-y les attributs (et fonctions au besoin) pour votre implémentation.
-//
 // Ci-dessous se trouvent aussi les déclarations de divers classes et interfaces
 // utilisées avec le buffer ComputationManager.
 
 #ifndef COMPUTATIONMANAGER_H
 #define COMPUTATIONMANAGER_H
 
-// Ajoutez les includes dont vous avez besoin ici
-
-#include <memory>
-
 #include "pcosynchro/pcohoaremonitor.h"
 
+#include <memory>
 #include <set>
 #include <iostream>
-
 
 /**
  * @brief The ComputationType enum represents the abstract computation types that are available
@@ -191,23 +184,20 @@ public:
 
 protected:
 
-    // Ajoutez vos attributs et déclarations de méthodes ici
-    // P.ex. variables conditions et structure de données pour le buffer
-
     /**
-     * @brief taills maximal autorisé pour la file d'attente d'entrée
+     * @brief taille maximale autorisée pour la file d'attente d'entrée
      */
     const size_t MAX_TOLERATED_QUEUE_SIZE;
 
     /**
-     * @brief Indicateur de l'appuie sur le bouton stop de la part de l'utilisateur
+     * @brief Indicateur de l'appui sur le bouton stop de la part de l'utilisateur
      */
     bool stopped = false;
 
 private:
 
     /**
-     * @brief Class pour trier par ordre croissant les résultats.
+     * @brief Classe pour trier par ordre croissant les résultats
      */
     class cmpGreaterResultId {
       public:
@@ -225,7 +215,7 @@ private:
     }
 
     /**
-     * @brief ID qu'aura le prochain calcul à rentré dans la file d'attente
+     * @brief ID qu'aura le prochain calcul à entrer dans la file d'attente
      */
     int nextId = 0;
     /**
@@ -235,7 +225,7 @@ private:
 
     /**
      * @brief Condition d'attente pour avoir au moins 1 élément dans la file d'entrée 
-     *        (une par ComputationType)
+     *        (un par ComputationType)
      */
     std::vector<Condition> inputNotEmpty;
     /**
@@ -245,16 +235,16 @@ private:
     std::vector<Condition> inputNotFull;
 
     /**
-     * @brief File d'attente d'entrée pour les calculs (un `queue` par ComputationType)
+     * @brief File d'attente d'entrée pour les calculs (une `queue` par ComputationType)
      */
     std::vector<std::queue<Request>> queueInput;
     /**
-     * @brief Nombre de thread en attente de contenut dans la file d'entrée (un compteur
+     * @brief Nombre de threads en attente de contenu dans la file d'entrée (un compteur
      *        par ComputationType)
      */
     std::vector<int> inputNotEmptyNbThreadWaiting;
     /**
-     * @brief Nombre de thread en attente de place dans la file d'entrée (un compteur
+     * @brief Nombre de threads en attente de place dans la file d'entrée (un compteur
      *        par ComputationType)
      */
     std::vector<int> inputNotFullNbThreadWaiting;
@@ -274,12 +264,12 @@ private:
     > queueOutput;
 
     /**
-     * @brief Set de identifiant des cacluls annulés qui n'on pas encore été signalé
+     * @brief Set d'identifiant des calculs annulés qui n'ont pas encore été signalés
      *        au thread de calcul
      */
     std::set<int> abortedSet;
     /**
-     * @brief File d'identifiant de calcul annulé qui n'on pas encore été supprimé
+     * @brief File d'identifiants de calculs annulés qui n'ont pas encore été supprimés
      *        de la file de sortie.
      *        L'id le plus petit se trouve toujours sur le dessus.
      */
