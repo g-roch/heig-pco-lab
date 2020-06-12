@@ -30,6 +30,11 @@
 enum class ComputationType {A, B, C};
 
 /**
+ * @brief Number elems of ComputationType
+ */
+#define COMPUTATION_TYPE_SIZE 3
+
+/**
  * @brief The Computation class Represents a computation with a given type and data.
  */
 class Computation
@@ -189,25 +194,27 @@ protected:
     // Ajoutez vos attributs et déclarations de méthodes ici
     // P.ex. variables conditions et structure de données pour le buffer
 
-    // Queues
+    /**
+     * @brief taills maximal autorisé pour la file d'attente d'entrée
+     */
     const size_t MAX_TOLERATED_QUEUE_SIZE;
 
+    /**
+     * @brief Indicateur de l'appuie sur le bouton stop de la part de l'utilisateur
+     */
     bool stopped = false;
 
 private:
 
-
-    class PriorityResult {
-    private:
-        Result result;
-    public:
-        PriorityResult(Result const & result) : result(result) { }
-        bool operator> (PriorityResult const & other) const {
-            return result.getId() > other.result.getId();
-        }
-        Result const & getResult() const { return  result; }
+    /**
+     * @brief Class pour trier par ordre croissant les résultats.
+     */
+    class cmpGreaterResultId {
+      public:
+      bool operator()(Result const & lhs, Result const & rhs) const{
+              return lhs.getId() > rhs.getId();
+      }
     };
-
 
     /**
      * @brief throwStopException Throws a StopException (will be handled by the caller)
@@ -217,23 +224,65 @@ private:
         throw StopException();
     }
 
+    /**
+     * @brief ID qu'aura le prochain calcul à rentré dans la file d'attente
+     */
     int nextId = 0;
+    /**
+     * @brief ID du prochain résultat à retourner
+     */
     int nextIdOutput = 0;
 
+    /**
+     * @brief Condition d'attente pour avoir au moins 1 élément dans la file d'entrée 
+     *        (une par ComputationType)
+     */
     std::vector<Condition> inputNotEmpty;
+    /**
+     * @brief Condition d'attente pour avoir de la place dans la file d'entrée 
+     *        (une par ComputationType)
+     */
     std::vector<Condition> inputNotFull;
+
+    /**
+     * @brief File d'attente d'entrée pour les calculs (un `queue` par ComputationType)
+     */
     std::vector<std::queue<Request>> queueInput;
+    /**
+     * @brief Nombre de thread en attente de contenut dans la file d'entrée (un compteur
+     *        par ComputationType)
+     */
     std::vector<int> inputNotEmptyNbThreadWaiting;
+    /**
+     * @brief Nombre de thread en attente de place dans la file d'entrée (un compteur
+     *        par ComputationType)
+     */
     std::vector<int> inputNotFullNbThreadWaiting;
 
+    /**
+     * @brief Condition d'attente pour avoir au moins 1 élément dans la file de sortie
+     */
     Condition outputNotEmpty;
+    /**
+     * @brief File d'attente de sortie pour les calculs.
+     *        Le calcul avec le plus petit identifiant se trouve toujours au sommet.
+     */
     std::priority_queue<
-        PriorityResult,
-        std::vector<PriorityResult>,
-        std::greater<PriorityResult>
+        Result,
+        std::vector<Result>,
+        cmpGreaterResultId
     > queueOutput;
 
+    /**
+     * @brief Set de identifiant des cacluls annulés qui n'on pas encore été signalé
+     *        au thread de calcul
+     */
     std::set<int> abortedSet;
+    /**
+     * @brief File d'identifiant de calcul annulé qui n'on pas encore été supprimé
+     *        de la file de sortie.
+     *        L'id le plus petit se trouve toujours sur le dessus.
+     */
     std::priority_queue<
         int,
         std::vector<int>,
