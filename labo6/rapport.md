@@ -61,6 +61,8 @@ Vérifier que les calculs mis en attente se font ensuite dans l'ordre après avo
 
 - Quand le 10ème calcul a été effectué, les suivants se font dans l'ordre croissant des identifiants
 
+- On demande 15 calcul de type A (donc il y en a 4 en attente) puis 15 calcul de type B (5 en attente au début), les resultats arrivents quand-même dans l'ordre (tous les A, puis tous les B).
+
 ### Etape 3
 
 #### Choix d'implémentation
